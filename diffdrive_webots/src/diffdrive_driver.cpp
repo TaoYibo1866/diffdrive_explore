@@ -1,5 +1,6 @@
 #include "diffdrive_webots/diffdrive_driver.hpp"
-#include "pluginlib/class_list_macros.hpp"
+
+using std::placeholders::_1;
 
 namespace diffdrive_webots
 {
@@ -8,15 +9,15 @@ namespace diffdrive_webots
     // initialize member variables
     node_ = node;
     robot_ = node->robot();
-    encoder1_ = NULL;
-    encoder2_ = NULL;
-    motor1_ = NULL;
-    motor2_ = NULL;
+    left_encoder_ = NULL;
+    right_encoder_ = NULL;
+    left_motor_ = NULL;
+    right_motor_ = NULL;
     encoder_period_ = (int)robot_->getBasicTimeStep();
-    prev_angle1_ = 0;
-    prev_angle2_ = 0;
-    cmd_vel_.linear.x = 0;
-    cmd_vel_.angular.z = 0;
+    prev_left_angle_ = 0;
+    prev_right_angle = 0;
+    forward_speed_ = 0;
+    angular_speed_ = 0;
     wheel_radius_ = 0;
     half_distance_between_wheels_ = 0;
 
@@ -36,7 +37,7 @@ namespace diffdrive_webots
     if (parameters.count("rightWheelEncoderName"))
       right_wheel_encoder_name = parameters["rightWheelEncoderName"];
     else
-      throw std::runtime_error("Must set ightWheelEncoderName tag");
+      throw std::runtime_error("Must set rightWheelEncoderName tag");
 
     std::string left_motor_name;
     if (parameters.count("leftMotorName"))
@@ -61,37 +62,38 @@ namespace diffdrive_webots
       throw std::runtime_error("Must set halfDistanceBetweenWheels tag");
 
     // set webots device
-    encoder1_ = robot_->getPositionSensor(left_wheel_encoder_name);
-    if (encoder1_ == NULL)
+    left_encoder_ = robot_->getPositionSensor(left_wheel_encoder_name);
+    if (left_encoder_ == NULL)
       throw std::runtime_error("Cannot find PositionSensor with name " + left_wheel_encoder_name);
     
-    encoder2_ = robot_->getPositionSensor(right_wheel_encoder_name);
-    if (encoder2_ == NULL)
+    right_encoder_ = robot_->getPositionSensor(right_wheel_encoder_name);
+    if (right_encoder_ == NULL)
       throw std::runtime_error("Cannot find PositionSensor with name " + right_wheel_encoder_name);
     
-    motor1_ = robot_->getMotor(left_motor_name);
-    if (motor1_ == NULL)
+    left_motor_ = robot_->getMotor(left_motor_name);
+    if (left_motor_ == NULL)
       throw std::runtime_error("Cannot find Motor with name " + left_motor_name);
     
-    motor2_ = robot_->getMotor(right_motor_name);
-    if (motor2_ == NULL)
+    right_motor_ = robot_->getMotor(right_motor_name);
+    if (right_motor_ == NULL)
       throw std::runtime_error("Cannot find Motor with name " + right_motor_name);
     
     int timestep = (int)robot_->getBasicTimeStep();
     if (encoder_period_ % timestep != 0)
       throw std::runtime_error("wheelEncoderPeriodMs must be integer multiple of basicTimeStep");
 
-    encoder1_->enable(encoder_period_);
-    encoder2_->enable(encoder_period_);
-    motor1_->setPosition(INFINITY);
-    motor1_->setVelocity(0);
-    motor2_->setPosition(INFINITY);
-    motor2_->setVelocity(0);
+    left_encoder_->enable(encoder_period_);
+    right_encoder_->enable(encoder_period_);
+    left_motor_->setPosition(INFINITY);
+    left_motor_->setVelocity(0);
+    right_motor_->setPosition(INFINITY);
+    right_motor_->setVelocity(0);
 
-    prev_angle1_ = encoder1_->getValue();
-    prev_angle2_ = encoder1_->getValue();
+    prev_left_angle_ = left_encoder_->getValue();
+    prev_right_angle = right_encoder_->getValue();
 
     wheel_speed_pub_ = node->create_publisher<sensor_msgs::msg::Joy>("wheel_speed", rclcpp::SensorDataQoS().reliable());
+    cmd_vel_sub_ = node->create_subscription<geometry_msgs::msg::Twist>("cmd_vel", rclcpp::SensorDataQoS().reliable(), std::bind(&DiffDriveDriver::cmdVelCallback, this, _1));
   }
 
   void DiffDriveDriver::step()
@@ -100,22 +102,32 @@ namespace diffdrive_webots
 
     if (sim_time % encoder_period_ == 0)
     {
-      double curr_angle1 = encoder1_->getValue();
-      double curr_angle2 = encoder2_->getValue();
-      double wheel_speed1 = 1e3 * (curr_angle1 - prev_angle1_) / encoder_period_;
-      double wheel_speed2 = 1e3 * (curr_angle2 - prev_angle2_) / encoder_period_;
-      prev_angle1_ = curr_angle1;
-      prev_angle2_ = curr_angle2;
+      double curr_left_angle = left_encoder_->getValue();
+      double curr_right_angle = right_encoder_->getValue();
+      double left_wheel_speed = 1e3 * (curr_left_angle - prev_left_angle_) / encoder_period_;
+      double right_wheel_speed = 1e3 * (curr_right_angle - prev_right_angle) / encoder_period_;
+      prev_left_angle_ = curr_left_angle;
+      prev_right_angle = curr_right_angle;
 
       sensor_msgs::msg::Joy wheel_speed;
       wheel_speed.header.stamp = node_->get_clock()->now();
       wheel_speed.axes.resize(2);
-      wheel_speed.axes[0] = wheel_speed1;
-      wheel_speed.axes[1] = wheel_speed2;
+      wheel_speed.axes[0] = left_wheel_speed;
+      wheel_speed.axes[1] = right_wheel_speed;
       
       wheel_speed_pub_->publish(wheel_speed);
     }
     
+    double left_wheel_speed_cmd = (forward_speed_ - half_distance_between_wheels_ * angular_speed_) / wheel_radius_;
+    double right_wheel_speed_cmd = (forward_speed_ + half_distance_between_wheels_ * angular_speed_) / wheel_radius_;
+    left_motor_->setVelocity(left_wheel_speed_cmd);
+    right_motor_->setVelocity(right_wheel_speed_cmd);
+  }
+
+  void DiffDriveDriver::cmdVelCallback(const geometry_msgs::msg::Twist::SharedPtr msg)
+  {
+    forward_speed_ = msg->linear.x;
+    angular_speed_ = msg->angular.z;
   }
 }
 

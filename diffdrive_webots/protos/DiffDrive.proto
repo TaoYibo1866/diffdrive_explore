@@ -45,6 +45,7 @@ Robot {
       device [
         RotationalMotor {
           name "motor1"
+          maxVelocity 1000
         }
         PositionSensor {
           name "encoder1"
@@ -81,6 +82,7 @@ Robot {
       device [
         RotationalMotor {
           name "motor2"
+          maxVelocity 1000
         }
         PositionSensor {
           name "encoder2"

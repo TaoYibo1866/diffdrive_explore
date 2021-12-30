@@ -19,21 +19,24 @@ namespace diffdrive_webots
     void step() override;
     void init(webots_ros2_driver::WebotsNode *node, std::unordered_map<std::string, std::string> &parameters) override;
   private:
+    void cmdVelCallback(const geometry_msgs::msg::Twist::SharedPtr msg);
     webots_ros2_driver::WebotsNode *node_;
     rclcpp::Publisher<sensor_msgs::msg::Joy>::SharedPtr wheel_speed_pub_;
-    geometry_msgs::msg::Twist cmd_vel_;
+    rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr cmd_vel_sub_;
     
     webots::Supervisor *robot_;
-    webots::PositionSensor *encoder1_;
-    webots::PositionSensor *encoder2_;
-    webots::Motor *motor1_;
-    webots::Motor *motor2_;
+    webots::PositionSensor *left_encoder_;
+    webots::PositionSensor *right_encoder_;
+    webots::Motor *left_motor_;
+    webots::Motor *right_motor_;
 
     int encoder_period_;
-    double prev_angle1_;
-    double prev_angle2_;
+    double prev_left_angle_;
+    double prev_right_angle;
     double wheel_radius_;
     double half_distance_between_wheels_;
+    double forward_speed_;
+    double angular_speed_;
   };
 }
 
