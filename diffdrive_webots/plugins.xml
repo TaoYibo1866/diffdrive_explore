@@ -1,0 +1,7 @@
+<library path="diffdrive_driver">
+  <class
+    type="diffdrive_webots::DiffDriveDriver"
+    base_class_type="webots_ros2_driver::PluginInterface">
+    <description></description>
+  </class>
+</library>

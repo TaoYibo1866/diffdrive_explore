@@ -1,0 +1,34 @@
+<?xml version="1.0" ?>
+<robot name="DiffDrive Webots">
+    <webots>
+
+        <device reference="gps" type="GPS">
+            <ros>
+                <topicName>/gps</topicName>
+                <enabled>true</enabled>
+                <alwaysOn>true</alwaysOn>
+            </ros>
+        </device>
+
+        <plugin type="webots_ros2_driver::Ros2IMU">
+            <topicName>/imu</topicName>
+            <enabled>true</enabled>
+            <alwaysOn>true</alwaysOn>
+            <inertialUnitName>inertial unit</inertialUnitName>
+            <gyroName>gyro</gyroName>
+            <frameName>imu_link</frameName>
+        </plugin>
+
+        <plugin type="diffdrive_webots::DiffDriveDriver">
+            <wheelEncoderPeriodMs>8</wheelEncoderPeriodMs>
+            <halfDistanceBetweenWheels>0.1</halfDistanceBetweenWheels>
+            <wheelRadius>0.03</wheelRadius>
+            <leftMotorName>motor1</leftMotorName>
+            <rightMotorName>motor2</rightMotorName>
+            <leftWheelEncoderName>encoder1</leftWheelEncoderName>
+            <rightWheelEncoderName>encoder2</rightWheelEncoderName>
+        </plugin>
+
+    </webots>
+
+</robot>

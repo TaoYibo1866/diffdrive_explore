@@ -1,0 +1,133 @@
+#VRML_SIM R2022a utf8
+WorldInfo {
+  basicTimeStep 8
+  FPS 30
+}
+Viewpoint {
+  orientation -0.09776680407197362 0.9389471109014068 0.3298787276431349 0.6114911047367242
+  position -2.1587097008783194 -0.36684925387828926 1.6172104673001435
+}
+TexturedBackgroundLight {
+}
+TexturedBackground {
+}
+RectangleArena {
+  floorSize 10 10
+  floorTileSize 1 1
+  wallHeight 0.5
+}
+Robot {
+  translation 0 0 0.05
+  children [
+    DEF BODY_SLOT Group {
+    }
+    DEF BODY Shape {
+      appearance PBRAppearance {
+        baseColor 0.2 0.6 0.2
+        transparency 0.2
+        roughness 1
+        metalness 0
+      }
+      geometry Cylinder {
+        height 0.07
+        radius 0.18
+      }
+    }
+    DEF LEFT_DRIVE HingeJoint {
+      jointParameters HingeJointParameters {
+        axis 0 1 0
+        anchor -0.1 0 -0.015
+      }
+      device [
+        RotationalMotor {
+          name "motor1"
+        }
+        PositionSensor {
+          name "encoder1"
+        }
+      ]
+      endPoint Solid {
+        translation -0.1 0.1 -0.015
+        rotation 1 0 0 1.5707996938995745
+        children [
+          DEF WHEEL Shape {
+            appearance PBRAppearance {
+              roughness 1
+              metalness 0
+            }
+            geometry Cylinder {
+              height 0.02
+              radius 0.03
+            }
+          }
+        ]
+        name "wheel1"
+        boundingObject USE WHEEL
+        physics Physics {
+          density -1
+          mass 0.05
+        }
+      }
+    }
+    DEF RIGHT_DRIVE HingeJoint {
+      jointParameters HingeJointParameters {
+        axis 0 1 0
+        anchor -0.1 0 -0.015
+      }
+      device [
+        RotationalMotor {
+          name "motor2"
+        }
+        PositionSensor {
+          name "encoder2"
+        }
+      ]
+      endPoint Solid {
+        translation -0.1 -0.1 -0.015
+        rotation 1 0 0 1.5707996938995745
+        children [
+          Solid {
+            children [
+              USE WHEEL
+            ]
+            boundingObject USE WHEEL
+            physics Physics {
+              density -1
+              mass 0.05
+            }
+          }
+        ]
+        name "wheel2"
+        boundingObject USE WHEEL
+        physics Physics {
+          density -1
+          mass 0.05
+        }
+      }
+    }
+    DEF FREE_WHEEL HingeJoint {
+      jointParameters HingeJointParameters {
+        anchor 0.1 0 -0.015
+      }
+      endPoint Solid {
+        translation 0.1 0 -0.015
+        rotation 1 0 0 1.5707996938995745
+        children [
+          USE WHEEL
+        ]
+        contactMaterial "front wheel"
+        boundingObject USE WHEEL
+        physics Physics {
+          density -1
+          mass 0.05
+        }
+      }
+    }
+  ]
+  boundingObject USE BODY
+  physics Physics {
+    density -1
+    mass 1.8
+  }
+  controller "<extern>"
+}

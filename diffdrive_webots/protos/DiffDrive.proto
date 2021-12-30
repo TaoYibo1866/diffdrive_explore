@@ -1,0 +1,137 @@
+#VRML_SIM R2022a utf8
+
+PROTO DiffDrive [
+  field SFVec3f           translation     0 0 0.05             # Is `Transform.translation`.
+  field SFRotation        rotation        1 0 0 0              # Is `Transform.rotation`.
+  field SFString          name            "DiffDrive"          # Is `Solid.name`.
+  field SFString          controller      "void"               # Is `Robot.controller`.
+  field MFString          controllerArgs  []                   # Is `Robot.controllerArgs`.
+  field SFString          customData      ""                   # Is `Robot.customData`.
+  field SFBool            supervisor      FALSE                # Is `Robot.supervisor`.
+  field SFBool            synchronization TRUE                 # Is `Robot.synchronization`.
+  field MFNode            bodySlot        []                   # Extends the robot with new nodes in the body slot.
+]
+{
+Robot {
+  translation IS translation
+  rotation IS rotation
+  name IS name
+  controller IS controller
+  controllerArgs IS controllerArgs
+  customData IS customData
+  supervisor IS supervisor
+  synchronization IS synchronization
+  children [
+    DEF BODY_SLOT Group {
+      children IS bodySlot
+    }
+    DEF BODY Shape {
+      appearance PBRAppearance {
+        baseColor 0.2 0.6 0.2
+        transparency 0.2
+        roughness 1
+        metalness 0
+      }
+      geometry Cylinder {
+        height 0.07
+        radius 0.18
+      }
+    }
+    DEF LEFT_DRIVE HingeJoint {
+      jointParameters HingeJointParameters {
+        axis 0 1 0
+        anchor -0.1 0 -0.015
+      }
+      device [
+        RotationalMotor {
+          name "motor1"
+        }
+        PositionSensor {
+          name "encoder1"
+        }
+      ]
+      endPoint Solid {
+        translation -0.1 0.1 -0.015
+        rotation 1 0 0 1.5707996938995745
+        children [
+          DEF WHEEL Shape {
+            appearance PBRAppearance {
+              roughness 1
+              metalness 0
+            }
+            geometry Cylinder {
+              height 0.02
+              radius 0.03
+            }
+          }
+        ]
+        name "wheel1"
+        boundingObject USE WHEEL
+        physics Physics {
+          density -1
+          mass 0.05
+        }
+      }
+    }
+    DEF RIGHT_DRIVE HingeJoint {
+      jointParameters HingeJointParameters {
+        axis 0 1 0
+        anchor -0.1 0 -0.015
+      }
+      device [
+        RotationalMotor {
+          name "motor2"
+        }
+        PositionSensor {
+          name "encoder2"
+        }
+      ]
+      endPoint Solid {
+        translation -0.1 -0.1 -0.015
+        rotation 1 0 0 1.5707996938995745
+        children [
+          Solid {
+            children [
+              USE WHEEL
+            ]
+            boundingObject USE WHEEL
+            physics Physics {
+              density -1
+              mass 0.05
+            }
+          }
+        ]
+        name "wheel2"
+        boundingObject USE WHEEL
+        physics Physics {
+          density -1
+          mass 0.05
+        }
+      }
+    }
+    DEF FREE_WHEEL HingeJoint {
+      jointParameters HingeJointParameters {
+        anchor 0.1 0 -0.015
+      }
+      endPoint Solid {
+        translation 0.1 0 -0.015
+        rotation 1 0 0 1.5707996938995745
+        children [
+          USE WHEEL
+        ]
+        boundingObject USE WHEEL
+        contactMaterial "front wheel"
+        physics Physics {
+          density -1
+          mass 0.05
+        }
+      }
+    }
+  ]
+  boundingObject USE BODY
+  physics Physics {
+    density -1
+    mass 1.8
+  }
+}
+}

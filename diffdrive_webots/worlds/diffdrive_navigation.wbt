@@ -1,0 +1,37 @@
+#VRML_SIM R2022a utf8
+WorldInfo {
+  basicTimeStep 8
+  FPS 30
+  contactProperties [
+    ContactProperties {
+      material2 "front wheel"
+      coulombFriction [
+        0
+      ]
+    }
+  ]
+}
+Viewpoint {
+  orientation -0.16238282467598678 0.6460395181065608 0.7458315890969559 0.6501082334447826
+  position -1.891232939247797 -1.287173777120332 0.9650455972620753
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+RectangleArena {
+  floorSize 10 10
+  floorTileSize 1 1
+  wallHeight 0.5
+}
+DiffDrive {
+  controller "<extern>"
+  bodySlot [
+    GPS {
+    }
+    Gyro {
+    }
+    InertialUnit {
+    }
+  ]
+}
