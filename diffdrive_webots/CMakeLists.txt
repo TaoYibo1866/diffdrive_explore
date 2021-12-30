@@ -68,6 +68,7 @@ ament_export_libraries(
 # diffdrive_driver end
 
 # install regular files
+install(FILES launch/joy_control_launch.py DESTINATION share/${PROJECT_NAME}/launch)
 install(FILES launch/robot_launch.py DESTINATION share/${PROJECT_NAME}/launch)
 install(FILES protos/DiffDrive.proto DESTINATION share/${PROJECT_NAME}/protos)
 install(FILES resource/diffdrive_webots.urdf DESTINATION share/${PROJECT_NAME}/resource)
