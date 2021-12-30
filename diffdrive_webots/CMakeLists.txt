@@ -20,7 +20,22 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(pluginlib REQUIRED)
 find_package(webots_ros2_driver REQUIRED)
+find_package(geometry_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
 
+# joy_control
+add_executable(joy_control src/joy_control.cpp)
+ament_target_dependencies(
+  joy_control
+  rclcpp 
+  geometry_msgs
+  sensor_msgs
+)
+
+install(TARGETS joy_control DESTINATION lib/${PROJECT_NAME})
+# joy_control end
+
+# diffdrive_driver
 add_library(
   diffdrive_driver
   SHARED
@@ -36,26 +51,27 @@ ament_target_dependencies(
   pluginlib
   rclcpp
   webots_ros2_driver
+  geometry_msgs
+  sensor_msgs
 )
 
 pluginlib_export_plugin_description_file(webots_ros2_driver plugins.xml)
 
-install(TARGETS
-  diffdrive_driver
-  ARCHIVE DESTINATION lib
-  LIBRARY DESTINATION lib
-  RUNTIME DESTINATION bin
-)
+install(TARGETS diffdrive_driver DESTINATION lib)
+
 ament_export_include_directories(
   include
 )
 ament_export_libraries(
   diffdrive_driver
 )
+# diffdrive_driver end
 
+# install regular files
 install(FILES launch/robot_launch.py DESTINATION share/${PROJECT_NAME}/launch)
 install(FILES protos/DiffDrive.proto DESTINATION share/${PROJECT_NAME}/protos)
 install(FILES resource/diffdrive_webots.urdf DESTINATION share/${PROJECT_NAME}/resource)
 install(FILES worlds/diffdrive_navigation.wbt DESTINATION share/${PROJECT_NAME}/worlds)
+# install regular files end
 
 ament_package()
