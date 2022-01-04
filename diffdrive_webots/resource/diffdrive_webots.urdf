@@ -18,15 +18,18 @@
             <gyroName>gyro</gyroName>
             <frameName>imu_link</frameName>
         </plugin>
-
-        <plugin type="diffdrive_webots::DiffDriveDriver">
+        
+        <plugin type="diffdrive_webots_plugin::WheelEncoder">
             <wheelEncoderPeriodMs>8</wheelEncoderPeriodMs>
+            <leftWheelEncoderName>encoder1</leftWheelEncoderName>
+            <rightWheelEncoderName>encoder2</rightWheelEncoderName>
+        </plugin>
+
+        <plugin type="diffdrive_webots_plugin::DifferentialControl">
             <halfDistanceBetweenWheels>0.1</halfDistanceBetweenWheels>
             <wheelRadius>0.03</wheelRadius>
             <leftMotorName>motor1</leftMotorName>
             <rightMotorName>motor2</rightMotorName>
-            <leftWheelEncoderName>encoder1</leftWheelEncoderName>
-            <rightWheelEncoderName>encoder2</rightWheelEncoderName>
         </plugin>
 
     </webots>

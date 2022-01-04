@@ -35,19 +35,20 @@ ament_target_dependencies(
 install(TARGETS joy_control DESTINATION lib/${PROJECT_NAME})
 # joy_control end
 
-# diffdrive_driver
+# plugins
 add_library(
-  diffdrive_driver
+  diffdrive_webots_plugin
   SHARED
-  src/diffdrive_driver.cpp
+  src/differential_control.cpp
+  src/wheel_encoder.cpp
 )
 target_include_directories(
-  diffdrive_driver
+  diffdrive_webots_plugin
   PRIVATE
   include
 )
 ament_target_dependencies(
-  diffdrive_driver
+  diffdrive_webots_plugin
   pluginlib
   rclcpp
   webots_ros2_driver
@@ -57,22 +58,21 @@ ament_target_dependencies(
 
 pluginlib_export_plugin_description_file(webots_ros2_driver plugins.xml)
 
-install(TARGETS diffdrive_driver DESTINATION lib)
+install(TARGETS diffdrive_webots_plugin DESTINATION lib)
 
 ament_export_include_directories(
   include
 )
 ament_export_libraries(
-  diffdrive_driver
+  diffdrive_webots_plugin
 )
-# diffdrive_driver end
+# plugins end
 
 # install regular files
-install(FILES launch/joy_control_launch.py DESTINATION share/${PROJECT_NAME}/launch)
-install(FILES launch/robot_launch.py DESTINATION share/${PROJECT_NAME}/launch)
-install(FILES protos/DiffDrive.proto DESTINATION share/${PROJECT_NAME}/protos)
-install(FILES resource/diffdrive_webots.urdf DESTINATION share/${PROJECT_NAME}/resource)
-install(FILES worlds/diffdrive_navigation.wbt DESTINATION share/${PROJECT_NAME}/worlds)
+install(
+  DIRECTORY launch protos resource worlds
+  DESTINATION share/${PROJECT_NAME}
+)
 # install regular files end
 
 ament_package()

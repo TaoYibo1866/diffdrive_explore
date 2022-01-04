@@ -1,7 +1,9 @@
-<library path="diffdrive_driver">
-  <class
-    type="diffdrive_webots::DiffDriveDriver"
-    base_class_type="webots_ros2_driver::PluginInterface">
-    <description></description>
+<library path="diffdrive_webots_plugin">
+  <class type="diffdrive_webots_plugin::DifferentialControl" base_class_type="webots_ros2_driver::PluginInterface">
+    <description>subscribe to /cmd_vel and generate motor speed</description>
+  </class>
+
+  <class type="diffdrive_webots_plugin::WheelEncoder" base_class_type="webots_ros2_driver::PluginInterface">
+    <description>publish /wheel_speed for wheel odometry</description>
   </class>
 </library>
