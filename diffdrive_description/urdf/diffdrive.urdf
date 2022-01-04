@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<robot name="DiffDrive" xmlns:xacro="http://ros.org/wiki/xacro">
+
+<xacro:macro name="wheel" params="link_name">
+    <link name="${link_name}">
+        <visual>
+            <origin xyz="0.0 0.0 0.0" rpy="${pi / 2} 0.0 0.0"/>
+            <geometry>
+                <cylinder radius="0.03" length="0.02"/>
+            </geometry>
+            <material name="White">
+                <color rgba="1.0 1.0 1.0 1.0"/>
+            </material>
+        </visual>
+    </link>
+</xacro:macro>
+
+<link name="base_link">
+    <visual>
+        <geometry>
+            <cylinder radius="0.18" length="0.07"/>
+        </geometry>
+        <material name="Green">
+            <color rgba="0.2 0.6 0.2 0.8"/>
+        </material>
+    </visual>
+</link>
+
+<link name="base_footprint"/>
+
+<xacro:wheel link_name="left_wheel_link"/>
+<xacro:wheel link_name="right_wheel_link"/>
+<xacro:wheel link_name="front_wheel_link"/>
+
+<joint name="base_link_to_base_footprint" type="fixed">
+    <parent link="base_link"/>
+    <child link="base_footprint"/>
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+</joint>
+
+<joint name="left_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="left_wheel_link"/>
+    <origin xyz="-0.1 0.1 -0.015" rpy="0.0 0.0 0.0"/>
+    <axis xyz="0.0 1.0 0.0"/>
+</joint>
+
+<joint name="right_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="right_wheel_link"/>
+    <origin xyz="-0.1 -0.1 -0.015" rpy="0.0 0.0 0.0"/>
+    <axis xyz="0.0 1.0 0.0"/>
+</joint>
+
+<joint name="front_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="front_wheel_link"/>
+    <origin xyz="0.1 0.0 -0.015" rpy="0.0 0.0 0.0"/>
+</joint>
+
+</robot>
