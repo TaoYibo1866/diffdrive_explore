@@ -14,12 +14,12 @@ def generate_launch_description():
         parameters=[{'robot_description': Command(['xacro ', LaunchConfiguration('model')])}]
     )
     
-    joint_state_publisher_node = launch_ros.actions.Node(
-        package='joint_state_publisher',
-        executable='joint_state_publisher',
-        name='joint_state_publisher',
-        parameters=[{'publish_default_positions': True}]
-    )
+    # joint_state_publisher_node = launch_ros.actions.Node(
+    #     package='joint_state_publisher',
+    #     executable='joint_state_publisher',
+    #     name='joint_state_publisher',
+    #     parameters=[{'publish_default_positions': True}]
+    # )
 
     joint_state_publisher_gui_node = launch_ros.actions.Node(
         package='joint_state_publisher_gui',
@@ -37,7 +37,7 @@ def generate_launch_description():
     )
 
     return launch.LaunchDescription([
-        launch.actions.DeclareLaunchArgument(name='gui', default_value='True',
+        launch.actions.DeclareLaunchArgument(name='gui', default_value='False',
                                             description='Flag to enable joint_state_publisher_gui'),
         launch.actions.DeclareLaunchArgument(name='model', default_value=default_model_path,
                                             description='Absolute path to robot urdf file'),
@@ -46,6 +46,6 @@ def generate_launch_description():
         
         robot_state_publisher_node,
         joint_state_publisher_gui_node,
-        joint_state_publisher_node,
+        # joint_state_publisher_node,
         rviz_node
     ])

@@ -52,7 +52,7 @@
     <axis xyz="0.0 1.0 0.0"/>
 </joint>
 
-<joint name="front_joint" type="fixed">
+<joint name="front_wheel_joint" type="fixed">
     <parent link="base_link"/>
     <child link="front_wheel_link"/>
     <origin xyz="0.1 0.0 -0.015" rpy="0.0 0.0 0.0"/>
