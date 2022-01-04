@@ -4,6 +4,6 @@
   </class>
 
   <class type="diffdrive_webots_plugin::WheelEncoder" base_class_type="webots_ros2_driver::PluginInterface">
-    <description>publish /wheel_speed for wheel odometry</description>
+    <description>publish /joint_states</description>
   </class>
 </library>
