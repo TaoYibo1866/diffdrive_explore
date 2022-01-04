@@ -5,6 +5,7 @@
 #include <webots/PositionSensor.hpp>
 
 #include <sensor_msgs/msg/joy.hpp>
+#include <sensor_msgs/msg/joint_state.hpp>
 
 #include <webots_ros2_driver/PluginInterface.hpp>
 #include <webots_ros2_driver/WebotsNode.hpp>
@@ -19,6 +20,8 @@ namespace diffdrive_webots_plugin
   private:
     webots_ros2_driver::WebotsNode *node_;
     rclcpp::Publisher<sensor_msgs::msg::Joy>::SharedPtr wheel_speed_pub_;
+    rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr joint_state_pub_;
+    sensor_msgs::msg::JointState joint_state_;
     
     webots::Supervisor *robot_;
     webots::PositionSensor *left_encoder_;

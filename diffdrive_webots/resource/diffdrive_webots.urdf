@@ -23,6 +23,8 @@
             <wheelEncoderPeriodMs>8</wheelEncoderPeriodMs>
             <leftWheelEncoderName>encoder1</leftWheelEncoderName>
             <rightWheelEncoderName>encoder2</rightWheelEncoderName>
+            <leftWheelJointName>left_wheel_joint</leftWheelJointName>
+            <rightWheelJointName>right_wheel_joint</rightWheelJointName>
         </plugin>
 
         <plugin type="diffdrive_webots_plugin::DifferentialControl">

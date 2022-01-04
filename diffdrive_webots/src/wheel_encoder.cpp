@@ -32,6 +32,18 @@ namespace diffdrive_webots_plugin
       right_wheel_encoder_name = parameters["rightWheelEncoderName"];
     else
       throw std::runtime_error("Must set rightWheelEncoderName tag");
+    
+    std::string left_wheel_joint_name;
+    if (parameters.count("leftWheelJointName"))
+      left_wheel_joint_name = parameters["leftWheelJointName"];
+    else
+      throw std::runtime_error("Must set leftWheelJointName tag");
+
+    std::string right_wheel_joint_name;
+    if (parameters.count("rightWheelJointName"))
+      right_wheel_joint_name = parameters["rightWheelJointName"];
+    else
+      throw std::runtime_error("Must set rightWheelJointName tag");
 
     // set webots device
     left_encoder_ = robot_->getPositionSensor(left_wheel_encoder_name);
@@ -52,7 +64,15 @@ namespace diffdrive_webots_plugin
     prev_left_angle_ = left_encoder_->getValue();
     prev_right_angle = right_encoder_->getValue();
 
+    joint_state_.name.resize(2);
+    joint_state_.position.resize(2);
+    joint_state_.name[0] = left_wheel_joint_name;
+    joint_state_.name[1] = right_wheel_joint_name;
+    joint_state_.position[0] = 0.0;
+    joint_state_.position[1] = 0.0;
+
     wheel_speed_pub_ = node->create_publisher<sensor_msgs::msg::Joy>("wheel_speed", rclcpp::SensorDataQoS().reliable());
+    joint_state_pub_ = node->create_publisher<sensor_msgs::msg::JointState>("joint_states", rclcpp::SensorDataQoS().reliable());
   }
 
   void WheelEncoder::step()
@@ -73,8 +93,12 @@ namespace diffdrive_webots_plugin
       wheel_speed.axes.resize(2);
       wheel_speed.axes[0] = left_wheel_speed;
       wheel_speed.axes[1] = right_wheel_speed;
-      
       wheel_speed_pub_->publish(wheel_speed);
+
+      joint_state_.header.stamp = node_->get_clock()->now();
+      joint_state_.position[0] = curr_left_angle;
+      joint_state_.position[1] = curr_right_angle;
+      joint_state_pub_->publish(joint_state_);
     }
 
   }

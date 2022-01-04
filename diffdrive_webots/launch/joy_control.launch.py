@@ -7,7 +7,7 @@ from launch.substitutions import ThisLaunchFileDir
 def generate_launch_description():
     include_robot_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            [ThisLaunchFileDir(), '/robot_launch.py']
+            [ThisLaunchFileDir(), '/webots.launch.py']
         ),
         launch_arguments={'world': 'diffdrive_navigation.wbt'}.items(),
     )
