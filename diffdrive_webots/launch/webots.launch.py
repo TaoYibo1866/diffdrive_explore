@@ -1,6 +1,6 @@
 import os
 import pathlib
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import Command, LaunchConfiguration
 from launch.actions import DeclareLaunchArgument
 from launch.substitutions.path_join_substitution import PathJoinSubstitution
 from launch_ros.actions import Node
@@ -10,12 +10,10 @@ from webots_ros2_driver.webots_launcher import WebotsLauncher
 
 
 def generate_launch_description():
-    package_dir = get_package_share_directory('diffdrive_webots')
-    world = LaunchConfiguration('world')
-    robot_description = pathlib.Path(os.path.join(package_dir, 'resource', 'diffdrive_webots.urdf')).read_text()
-
+    pkg_share = get_package_share_directory('diffdrive_webots')
+    
     webots = WebotsLauncher(
-        world=PathJoinSubstitution([package_dir, 'worlds', world]),
+        world=PathJoinSubstitution([pkg_share, 'worlds', LaunchConfiguration('world')]),
         gui=True,
         mode='realtime'
     )
@@ -25,7 +23,8 @@ def generate_launch_description():
         executable='driver',
         output='screen',
         parameters=[
-            {'robot_description': robot_description},
+            {'robot_description': Command(['xacro ', os.path.join(pkg_share, 'resource', 'diffdrive_webots.urdf')])},
+            {'use_sim_time': True}
         ]
     )
 

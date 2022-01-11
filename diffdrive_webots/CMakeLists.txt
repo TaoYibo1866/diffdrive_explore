@@ -41,6 +41,7 @@ add_library(
   SHARED
   src/differential_control.cpp
   src/wheel_encoder.cpp
+  src/imu.cpp
 )
 target_include_directories(
   diffdrive_webots_plugin

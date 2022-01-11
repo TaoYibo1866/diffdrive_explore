@@ -2,27 +2,18 @@
 <robot name="DiffDrive Webots">
     <webots>
 
-        <device reference="gps" type="GPS">
-            <ros>
-                <topicName>/gps</topicName>
-                <enabled>true</enabled>
-                <alwaysOn>true</alwaysOn>
-            </ros>
-        </device>
-
-        <plugin type="webots_ros2_driver::Ros2IMU">
-            <topicName>/imu</topicName>
-            <enabled>true</enabled>
-            <alwaysOn>true</alwaysOn>
-            <inertialUnitName>inertial unit</inertialUnitName>
+        <plugin type="diffdrive_webots_plugin::IMU">
+            <imuPeriodMs>2</imuPeriodMs>
+            <accelerometerName>accelerometer</accelerometerName>
             <gyroName>gyro</gyroName>
-            <frameName>imu_link</frameName>
+            <inertialUnitName>inertial unit</inertialUnitName>
+            <frameID>base_link</frameID>
         </plugin>
         
         <plugin type="diffdrive_webots_plugin::WheelEncoder">
-            <wheelEncoderPeriodMs>8</wheelEncoderPeriodMs>
-            <leftWheelEncoderName>encoder1</leftWheelEncoderName>
-            <rightWheelEncoderName>encoder2</rightWheelEncoderName>
+            <wheelEncoderPeriodMs>4</wheelEncoderPeriodMs>
+            <leftWheelEncoderName>left encoder</leftWheelEncoderName>
+            <rightWheelEncoderName>right encoder</rightWheelEncoderName>
             <leftWheelJointName>left_wheel_joint</leftWheelJointName>
             <rightWheelJointName>right_wheel_joint</rightWheelJointName>
         </plugin>
@@ -30,8 +21,8 @@
         <plugin type="diffdrive_webots_plugin::DifferentialControl">
             <halfDistanceBetweenWheels>0.1</halfDistanceBetweenWheels>
             <wheelRadius>0.03</wheelRadius>
-            <leftMotorName>motor1</leftMotorName>
-            <rightMotorName>motor2</rightMotorName>
+            <leftMotorName>left motor</leftMotorName>
+            <rightMotorName>right motor</rightMotorName>
         </plugin>
 
     </webots>

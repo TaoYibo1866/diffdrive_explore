@@ -19,6 +19,7 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(tf2 REQUIRED)
+find_package(tf2_ros REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
 
@@ -27,10 +28,15 @@ ament_target_dependencies(
   wheel_odometry
   rclcpp 
   tf2
+  tf2_ros
   sensor_msgs
   nav_msgs
 )
 
 install(TARGETS wheel_odometry DESTINATION lib/${PROJECT_NAME})
+install(
+  DIRECTORY launch config
+  DESTINATION share/${PROJECT_NAME}
+)
 
 ament_package()

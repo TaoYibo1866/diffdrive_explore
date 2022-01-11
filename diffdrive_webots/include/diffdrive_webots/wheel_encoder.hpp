@@ -4,7 +4,6 @@
 #include <webots/Supervisor.hpp>
 #include <webots/PositionSensor.hpp>
 
-#include <sensor_msgs/msg/joy.hpp>
 #include <sensor_msgs/msg/joint_state.hpp>
 
 #include <webots_ros2_driver/PluginInterface.hpp>

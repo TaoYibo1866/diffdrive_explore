@@ -1,6 +1,6 @@
 #VRML_SIM R2022a utf8
 WorldInfo {
-  basicTimeStep 8
+  basicTimeStep 2
   FPS 30
 }
 Viewpoint {
@@ -40,10 +40,10 @@ Robot {
       }
       device [
         RotationalMotor {
-          name "motor1"
+          name "left motor"
         }
         PositionSensor {
-          name "encoder1"
+          name "left encoder"
         }
       ]
       endPoint Solid {
@@ -61,7 +61,7 @@ Robot {
             }
           }
         ]
-        name "wheel1"
+        name "left wheel"
         boundingObject USE WHEEL
         physics Physics {
           density -1
@@ -76,10 +76,10 @@ Robot {
       }
       device [
         RotationalMotor {
-          name "motor2"
+          name "right motor"
         }
         PositionSensor {
-          name "encoder2"
+          name "right encoder"
         }
       ]
       endPoint Solid {
@@ -97,7 +97,7 @@ Robot {
             }
           }
         ]
-        name "wheel2"
+        name "right wheel"
         boundingObject USE WHEEL
         physics Physics {
           density -1

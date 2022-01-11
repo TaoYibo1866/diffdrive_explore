@@ -6,4 +6,8 @@
   <class type="diffdrive_webots_plugin::WheelEncoder" base_class_type="webots_ros2_driver::PluginInterface">
     <description>publish /joint_states</description>
   </class>
+
+  <class type="diffdrive_webots_plugin::IMU" base_class_type="webots_ros2_driver::PluginInterface">
+    <description>publish /imu</description>
+  </class>
 </library>

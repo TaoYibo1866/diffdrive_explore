@@ -44,11 +44,11 @@ Robot {
       }
       device [
         RotationalMotor {
-          name "motor1"
+          name "left motor"
           maxVelocity 1000
         }
         PositionSensor {
-          name "encoder1"
+          name "left encoder"
         }
       ]
       endPoint Solid {
@@ -66,7 +66,7 @@ Robot {
             }
           }
         ]
-        name "wheel1"
+        name "left wheel"
         boundingObject USE WHEEL
         physics Physics {
           density -1
@@ -81,11 +81,11 @@ Robot {
       }
       device [
         RotationalMotor {
-          name "motor2"
+          name "right motor"
           maxVelocity 1000
         }
         PositionSensor {
-          name "encoder2"
+          name "right encoder"
         }
       ]
       endPoint Solid {
@@ -103,7 +103,7 @@ Robot {
             }
           }
         ]
-        name "wheel2"
+        name "right wheel"
         boundingObject USE WHEEL
         physics Physics {
           density -1

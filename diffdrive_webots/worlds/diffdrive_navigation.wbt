@@ -1,6 +1,6 @@
 #VRML_SIM R2022a utf8
 WorldInfo {
-  basicTimeStep 8
+  basicTimeStep 2
   FPS 30
   contactProperties [
     ContactProperties {
@@ -27,7 +27,7 @@ RectangleArena {
 DiffDrive {
   controller "<extern>"
   bodySlot [
-    GPS {
+    Accelerometer {
     }
     Gyro {
     }
