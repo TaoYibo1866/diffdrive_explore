@@ -18,7 +18,7 @@ def generate_launch_description():
         mode='realtime'
     )
 
-    webots_robot_driver = Node(
+    robot_driver_node = Node(
         package='webots_ros2_driver',
         executable='driver',
         output='screen',
@@ -35,5 +35,5 @@ def generate_launch_description():
             description='Choose one of the world files from `/diffdrive_webots/worlds` directory'
         ),
         webots,
-        webots_robot_driver
+        robot_driver_node
     ])

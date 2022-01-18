@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(diffdrive_localization)
+project(ground_control)
 
 # Default to C99
 if(NOT CMAKE_C_STANDARD)
@@ -18,24 +18,21 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
-find_package(tf2 REQUIRED)
-find_package(tf2_ros REQUIRED)
+find_package(geometry_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
-find_package(nav_msgs REQUIRED)
 
-add_executable(wheel_odometry src/wheel_odometry.cpp)
+add_executable(joy_control src/joy_control.cpp)
 ament_target_dependencies(
-  wheel_odometry
+  joy_control
   rclcpp 
-  tf2
-  tf2_ros
+  geometry_msgs
   sensor_msgs
-  nav_msgs
 )
 
-install(TARGETS wheel_odometry DESTINATION lib/${PROJECT_NAME})
+install(TARGETS joy_control DESTINATION lib/${PROJECT_NAME})
+
 install(
-  DIRECTORY launch config rviz
+  DIRECTORY launch rviz
   DESTINATION share/${PROJECT_NAME}
 )
 

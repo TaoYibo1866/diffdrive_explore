@@ -18,22 +18,10 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
-find_package(pluginlib REQUIRED)
-find_package(webots_ros2_driver REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
-
-# joy_control
-add_executable(joy_control src/joy_control.cpp)
-ament_target_dependencies(
-  joy_control
-  rclcpp 
-  geometry_msgs
-  sensor_msgs
-)
-
-install(TARGETS joy_control DESTINATION lib/${PROJECT_NAME})
-# joy_control end
+find_package(pluginlib REQUIRED)
+find_package(webots_ros2_driver REQUIRED)
 
 # plugins
 add_library(

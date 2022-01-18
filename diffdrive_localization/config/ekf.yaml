@@ -1,5 +1,5 @@
 ### ekf config file ###
-ekf_filter_node:
+ekf_odometry:
     ros__parameters:
         frequency: 30.0
 

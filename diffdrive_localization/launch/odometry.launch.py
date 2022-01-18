@@ -18,10 +18,10 @@ def generate_launch_description():
         ]
     )
 
-    robot_localization_node = Node(
+    ekf_odometry_node = Node(
         package='robot_localization',
         executable='ekf_node',
-        name='ekf_filter_node',
+        name='ekf_odometry',
         output='screen',
         parameters=[
             os.path.join(pkg_share, 'config', 'ekf.yaml'),
@@ -32,9 +32,9 @@ def generate_launch_description():
     return LaunchDescription([
         DeclareLaunchArgument(
             name='use_sim_time', 
-            default_value='True',
+            default_value='False',
             description='Flag to enable use_sim_time'),
         
         wheel_odometry_node,
-        robot_localization_node
+        ekf_odometry_node
     ])
