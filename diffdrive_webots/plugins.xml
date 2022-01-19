@@ -10,4 +10,12 @@
   <class type="diffdrive_webots_plugin::IMU" base_class_type="webots_ros2_driver::PluginInterface">
     <description>publish /imu</description>
   </class>
+
+  <class type="diffdrive_webots_plugin::DepthCamera" base_class_type="webots_ros2_driver::PluginInterface">
+    <description>publish /depth_image</description>
+  </class>
+
+  <class type="diffdrive_webots_plugin::Camera" base_class_type="webots_ros2_driver::PluginInterface">
+    <description>publish /image</description>
+  </class>
 </library>

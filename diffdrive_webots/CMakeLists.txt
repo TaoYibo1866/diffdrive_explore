@@ -30,6 +30,8 @@ add_library(
   src/differential_control.cpp
   src/wheel_encoder.cpp
   src/imu.cpp
+  src/depth_camera.cpp
+  src/camera.cpp
 )
 target_include_directories(
   diffdrive_webots_plugin

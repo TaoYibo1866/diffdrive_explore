@@ -1,5 +1,5 @@
-#ifndef IMU_HPP
-#define IMU_HPP
+#ifndef DIFFDRIVE_WEBOTS_IMU_HPP
+#define DIFFDRIVE_WEBOTS_IMU_HPP
 
 #include <webots/Supervisor.hpp>
 

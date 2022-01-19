@@ -1,5 +1,5 @@
-#ifndef WHEEL_ENCODER_HPP
-#define WHEEL_ENCODER_HPP
+#ifndef DIFFDRIVE_WEBOTS_WHEEL_ENCODER_HPP
+#define DIFFDRIVE_WEBOTS_WHEEL_ENCODER_HPP
 
 #include <webots/Supervisor.hpp>
 #include <webots/PositionSensor.hpp>

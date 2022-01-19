@@ -6,14 +6,26 @@
             <imuPeriodMs>2</imuPeriodMs>
             <accelerometerName>accelerometer</accelerometerName>
             <gyroName>gyro</gyroName>
-            <inertialUnitName>inertial unit</inertialUnitName>
+            <inertialUnitName>inertial_unit</inertialUnitName>
             <frameID>base_link</frameID>
+        </plugin>
+        
+        <plugin type="diffdrive_webots_plugin::Camera">
+            <cameraPeriodMs>32</cameraPeriodMs>
+            <cameraName>camera</cameraName>
+            <frameID>camera_link</frameID>
+        </plugin>
+
+        <plugin type="diffdrive_webots_plugin::DepthCamera">
+            <depthCameraPeriodMs>16</depthCameraPeriodMs>
+            <depthCameraName>depth_camera</depthCameraName>
+            <frameID>camera_link</frameID>
         </plugin>
         
         <plugin type="diffdrive_webots_plugin::WheelEncoder">
             <wheelEncoderPeriodMs>4</wheelEncoderPeriodMs>
-            <leftWheelEncoderName>left encoder</leftWheelEncoderName>
-            <rightWheelEncoderName>right encoder</rightWheelEncoderName>
+            <leftWheelEncoderName>left_encoder</leftWheelEncoderName>
+            <rightWheelEncoderName>right_encoder</rightWheelEncoderName>
             <leftWheelJointName>left_wheel_joint</leftWheelJointName>
             <rightWheelJointName>right_wheel_joint</rightWheelJointName>
         </plugin>
@@ -21,8 +33,8 @@
         <plugin type="diffdrive_webots_plugin::DifferentialControl">
             <halfDistanceBetweenWheels>0.1</halfDistanceBetweenWheels>
             <wheelRadius>0.03</wheelRadius>
-            <leftMotorName>left motor</leftMotorName>
-            <rightMotorName>right motor</rightMotorName>
+            <leftMotorName>left_motor</leftMotorName>
+            <rightMotorName>right_motor</rightMotorName>
         </plugin>
 
     </webots>

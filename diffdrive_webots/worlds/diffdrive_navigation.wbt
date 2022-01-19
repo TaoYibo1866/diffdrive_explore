@@ -12,8 +12,8 @@ WorldInfo {
   ]
 }
 Viewpoint {
-  orientation -0.16238282467598678 0.6460395181065608 0.7458315890969559 0.6501082334447826
-  position -1.891232939247797 -1.287173777120332 0.9650455972620753
+  orientation -0.2411965096353575 0.8194670205088035 0.5199019581018568 1.0302891638980018
+  position -8.537310056561674 -5.580510440050602 12.140242542077484
 }
 TexturedBackground {
 }
@@ -22,16 +22,113 @@ TexturedBackgroundLight {
 RectangleArena {
   floorSize 10 10
   floorTileSize 1 1
-  wallHeight 0.5
+  wallHeight 2
+}
+DEF OBSTACLES Group {
+  children [
+    CardboardBox {
+      translation -1.02 1.73 0.3
+      name "cardboard box(9)"
+    }
+    CardboardBox {
+      translation -1.87 1.73 0.3
+      name "cardboard box(10)"
+    }
+    CardboardBox {
+      translation -2.7 1.73 0.3
+      name "cardboard box(11)"
+    }
+    CardboardBox {
+      translation -2.05 0.32 0.3
+      name "cardboard box(12)"
+    }
+    CardboardBox {
+      translation -2.05 -0.39 0.3
+      name "cardboard box(13)"
+    }
+    CardboardBox {
+      translation -2.05 -1.07 0.3
+      name "cardboard box(14)"
+    }
+    CardboardBox {
+      translation -2.05 -1.83 0.3
+      name "cardboard box(15)"
+    }
+    CardboardBox {
+      translation 2.39 -0.12 0.3
+      name "cardboard box(1)"
+    }
+    CardboardBox {
+      translation 3.14 -0.12 0.3
+      name "cardboard box(7)"
+    }
+    CardboardBox {
+      translation 3.87 -0.12 0.3
+      name "cardboard box(8)"
+    }
+    CardboardBox {
+      translation -0.63 -2.45 0.3
+      name "cardboard box(2)"
+    }
+    CardboardBox {
+      translation 0.04 -2.45 0.3
+      name "cardboard box(3)"
+    }
+    CardboardBox {
+      translation 0.78 -2.45 0.3
+      name "cardboard box(4)"
+    }
+    CardboardBox {
+      translation 1.58 1.73 0.3
+    }
+    CardboardBox {
+      translation 1.58 2.45 0.3
+      name "cardboard box(5)"
+    }
+    CardboardBox {
+      translation 1.58 3.18 0.3
+      name "cardboard box(6)"
+    }
+  ]
 }
 DiffDrive {
   controller "<extern>"
   bodySlot [
+    Camera {
+      translation 0 0 0.1
+      rotation 0 -1 0 0.2617996938995747
+      fieldOfView 1.1344
+      width 1280
+      height 800
+    }
+    RangeFinder {
+      translation 0 0 0.1
+      rotation 0 -1 0 0.2617996938995747
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0 0 0
+            roughness 1
+            metalness 0
+          }
+          geometry Box {
+            size 0.026 0.125 0.029
+          }
+        }
+      ]
+      name "depth_camera"
+      fieldOfView 1.1344
+      width 1280
+      height 720
+      minRange 0.5
+      maxRange 6
+    }
     Accelerometer {
     }
     Gyro {
     }
     InertialUnit {
+      name "inertial_unit"
     }
   ]
 }

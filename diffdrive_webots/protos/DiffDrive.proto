@@ -44,11 +44,11 @@ Robot {
       }
       device [
         RotationalMotor {
-          name "left motor"
+          name "left_motor"
           maxVelocity 1000
         }
         PositionSensor {
-          name "left encoder"
+          name "left_encoder"
         }
       ]
       endPoint Solid {
@@ -66,7 +66,7 @@ Robot {
             }
           }
         ]
-        name "left wheel"
+        name "left_wheel"
         boundingObject USE WHEEL
         physics Physics {
           density -1
@@ -81,11 +81,11 @@ Robot {
       }
       device [
         RotationalMotor {
-          name "right motor"
+          name "right_motor"
           maxVelocity 1000
         }
         PositionSensor {
-          name "right encoder"
+          name "right_encoder"
         }
       ]
       endPoint Solid {
@@ -103,7 +103,7 @@ Robot {
             }
           }
         ]
-        name "right wheel"
+        name "right_wheel"
         boundingObject USE WHEEL
         physics Physics {
           density -1
@@ -111,22 +111,17 @@ Robot {
         }
       }
     }
-    DEF FREE_WHEEL HingeJoint {
-      jointParameters HingeJointParameters {
-        anchor 0.1 0 -0.015
-      }
-      endPoint Solid {
-        translation 0.1 0 -0.015
-        rotation 1 0 0 1.5707996938995745
-        children [
-          USE WHEEL
-        ]
-        boundingObject USE WHEEL
-        contactMaterial "front wheel"
-        physics Physics {
-          density -1
-          mass 0.05
-        }
+    DEF FREE_WHEEL Solid {
+      translation 0.1 0 -0.015
+      rotation 1 0 0 1.5707996938995745
+      children [
+        USE WHEEL
+      ]
+      contactMaterial "front wheel"
+      boundingObject USE WHEEL
+      physics Physics {
+        density -1
+        mass 0.05
       }
     }
   ]

@@ -19,13 +19,15 @@ def generate_launch_description():
     joy_node = Node(
         package='joy',
         executable='joy_node',
-        name='joy'
+        name='joy',
+        output='screen',
     )
 
     joy_control_node = Node(
         package='ground_control',
         executable='joy_control',
-        name='joy_control'
+        name='joy_control',
+        output='screen',
     )
 
     rviz_node = Node(

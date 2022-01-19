@@ -1,5 +1,5 @@
-#ifndef DIFFERENTIAL_CONTROL_HPP
-#define DIFFERENTIAL_CONTROL_HPP
+#ifndef DIFFDRIVE_WEBOTS_DIFFERENTIAL_CONTROL_HPP
+#define DIFFDRIVE_WEBOTS_DIFFERENTIAL_CONTROL_HPP
 
 #include <webots/Supervisor.hpp>
 #include <webots/Motor.hpp>

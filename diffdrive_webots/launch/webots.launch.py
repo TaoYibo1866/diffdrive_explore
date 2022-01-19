@@ -1,5 +1,4 @@
 import os
-import pathlib
 from launch.substitutions import Command, LaunchConfiguration
 from launch.actions import DeclareLaunchArgument
 from launch.substitutions.path_join_substitution import PathJoinSubstitution
@@ -21,11 +20,20 @@ def generate_launch_description():
     robot_driver_node = Node(
         package='webots_ros2_driver',
         executable='driver',
+        name='webots_ros2_driver',
         output='screen',
         parameters=[
             {'robot_description': Command(['xacro ', os.path.join(pkg_share, 'resource', 'diffdrive_webots.urdf')])},
             {'use_sim_time': True}
         ]
+    )
+
+    static_transform_publisher_node = Node(
+        package='tf2_ros',
+        executable='static_transform_publisher',
+        name='static_transform_publisher',
+        output='screen',
+        arguments=['0', '0', '0.1', '0', '-0.2617996938995747', '0', 'base_link', 'camera_link'],
     )
 
     return LaunchDescription([
@@ -35,5 +43,6 @@ def generate_launch_description():
             description='Choose one of the world files from `/diffdrive_webots/worlds` directory'
         ),
         webots,
-        robot_driver_node
+        robot_driver_node,
+        static_transform_publisher_node
     ])
