@@ -36,8 +36,8 @@ private:
     }
     else
     {
-      forward_speed = 2 * msg->axes[3];
-      angular_speed = 90 * msg->axes[2] * M_PI / 180.0;
+      forward_speed = 1 * msg->axes[3];
+      angular_speed = 60 * msg->axes[2] * M_PI / 180.0;
     }
     
     Twist cmd_vel;
