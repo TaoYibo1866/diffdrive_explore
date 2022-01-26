@@ -117,8 +117,10 @@ Robot {
       children [
         USE WHEEL
       ]
-      contactMaterial "front wheel"
-      boundingObject USE WHEEL
+      contactMaterial "free_wheel"
+      boundingObject Sphere {
+        radius 0.03
+      }
       physics Physics {
         density -1
         mass 0.05

@@ -60,7 +60,7 @@ namespace diffdrive_webots_plugin
     if (sim_time % depth_camera_period_ == 0)
     {
       depth_image_.header.stamp = node_->get_clock()->now();
-      memcpy(depth_image_.data.data(), depth_camera_->getRangeImage(), depth_image_.data.size());
+      memcpy(depth_image_.data.data(), depth_camera_->getRangeImage(), depth_image_.data.size()* sizeof(uint8_t));
       depth_image_pub_->publish(depth_image_);
     }
 

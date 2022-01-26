@@ -1,10 +1,10 @@
 #VRML_SIM R2022a utf8
 WorldInfo {
-  basicTimeStep 2
+  basicTimeStep 5
   FPS 30
   contactProperties [
     ContactProperties {
-      material2 "front wheel"
+      material2 "free_wheel"
       coulombFriction [
         0
       ]
@@ -121,7 +121,16 @@ DiffDrive {
       width 1280
       height 720
       minRange 0.5
-      maxRange 6
+      maxRange 8
+    }
+    Lidar {
+      translation 0 0 0.2
+      name "laser_scan"
+      horizontalResolution 360
+      fieldOfView 6.28319
+      numberOfLayers 1
+      minRange 0.1
+      maxRange 12
     }
     Accelerometer {
     }

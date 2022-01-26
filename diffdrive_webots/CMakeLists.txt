@@ -32,6 +32,7 @@ add_library(
   src/imu.cpp
   src/depth_camera.cpp
   src/camera.cpp
+  src/laser_scan.cpp
 )
 target_include_directories(
   diffdrive_webots_plugin

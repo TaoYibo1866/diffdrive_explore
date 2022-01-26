@@ -18,4 +18,8 @@
   <class type="diffdrive_webots_plugin::Camera" base_class_type="webots_ros2_driver::PluginInterface">
     <description>publish /image</description>
   </class>
+
+  <class type="diffdrive_webots_plugin::LaserScan" base_class_type="webots_ros2_driver::PluginInterface">
+    <description>publish /scan</description>
+  </class>
 </library>

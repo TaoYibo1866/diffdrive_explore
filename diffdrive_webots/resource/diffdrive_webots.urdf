@@ -3,27 +3,33 @@
     <webots>
 
         <plugin type="diffdrive_webots_plugin::IMU">
-            <imuPeriodMs>2</imuPeriodMs>
+            <imuPeriodMs>5</imuPeriodMs>
             <accelerometerName>accelerometer</accelerometerName>
             <gyroName>gyro</gyroName>
             <inertialUnitName>inertial_unit</inertialUnitName>
             <frameID>base_link</frameID>
         </plugin>
-        
+
+        <plugin type="diffdrive_webots_plugin::LaserScan">
+            <laserScanPeriodMs>100</laserScanPeriodMs>
+            <laserScanName>laser_scan</laserScanName>
+            <frameID>laser</frameID>
+        </plugin>
+
         <plugin type="diffdrive_webots_plugin::Camera">
-            <cameraPeriodMs>32</cameraPeriodMs>
+            <cameraPeriodMs>30</cameraPeriodMs>
             <cameraName>camera</cameraName>
-            <frameID>camera_link</frameID>
+            <frameID>camera</frameID>
         </plugin>
 
         <plugin type="diffdrive_webots_plugin::DepthCamera">
-            <depthCameraPeriodMs>16</depthCameraPeriodMs>
+            <depthCameraPeriodMs>10</depthCameraPeriodMs>
             <depthCameraName>depth_camera</depthCameraName>
-            <frameID>camera_link</frameID>
+            <frameID>camera</frameID>
         </plugin>
-        
+
         <plugin type="diffdrive_webots_plugin::WheelEncoder">
-            <wheelEncoderPeriodMs>4</wheelEncoderPeriodMs>
+            <wheelEncoderPeriodMs>5</wheelEncoderPeriodMs>
             <leftWheelEncoderName>left_encoder</leftWheelEncoderName>
             <rightWheelEncoderName>right_encoder</rightWheelEncoderName>
             <leftWheelJointName>left_wheel_joint</leftWheelJointName>

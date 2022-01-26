@@ -60,7 +60,7 @@ namespace diffdrive_webots_plugin
     if (sim_time % camera_period_ == 0)
     {
       image_.header.stamp = node_->get_clock()->now();
-      memcpy(image_.data.data(), camera_->getImage(), image_.data.size());
+      memcpy(image_.data.data(), camera_->getImage(), image_.data.size() * sizeof(uint8_t));
       image_pub_->publish(image_);
     }
 

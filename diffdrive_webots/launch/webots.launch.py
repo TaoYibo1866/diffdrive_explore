@@ -28,12 +28,20 @@ def generate_launch_description():
         ]
     )
 
-    static_transform_publisher_node = Node(
+    static_transform_publisher_node1 = Node(
         package='tf2_ros',
         executable='static_transform_publisher',
         name='static_transform_publisher',
         output='screen',
-        arguments=['0', '0', '0.1', '0', '-0.2617996938995747', '0', 'base_link', 'camera_link'],
+        arguments=['0', '0', '0.1', '0', '-0.2617996938995747', '0', 'base_link', 'camera'],
+    )
+
+    static_transform_publisher_node2 = Node(
+        package='tf2_ros',
+        executable='static_transform_publisher',
+        name='static_transform_publisher',
+        output='screen',
+        arguments=['0', '0', '0.2', '0', '0', '0', 'base_link', 'laser'],
     )
 
     return LaunchDescription([
@@ -44,5 +52,6 @@ def generate_launch_description():
         ),
         webots,
         robot_driver_node,
-        static_transform_publisher_node
+        static_transform_publisher_node1,
+        static_transform_publisher_node2
     ])

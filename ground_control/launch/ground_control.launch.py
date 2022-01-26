@@ -30,17 +30,17 @@ def generate_launch_description():
         output='screen',
     )
 
-    rviz_node = Node(
-        package='rviz2',
-        executable='rviz2',
-        name='rviz2',
-        output='screen',
-        arguments=['-d', os.path.join(ground_control_share, 'rviz', 'default.rviz')],
-    )
+    # rviz_node = Node(
+    #     package='rviz2',
+    #     executable='rviz2',
+    #     name='rviz2',
+    #     output='screen',
+    #     arguments=['-d', os.path.join(ground_control_share, 'rviz', 'default.rviz')],
+    # )
 
     return LaunchDescription([
         load_description_launch,
-        rviz_node,
+        # rviz_node,
         joy_node,
         joy_control_node
     ])

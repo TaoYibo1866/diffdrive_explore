@@ -30,7 +30,18 @@
 
 <xacro:wheel link_name="left_wheel_link"/>
 <xacro:wheel link_name="right_wheel_link"/>
-<xacro:wheel link_name="front_wheel_link"/>
+
+<link name="front_wheel_link">
+    <visual>
+        <origin xyz="0.0 0.0 0.0" rpy="${pi / 2} 0.0 0.0"/>
+        <geometry>
+            <sphere radius="0.03"/>
+        </geometry>
+        <material name="White">
+            <color rgba="1.0 1.0 1.0 1.0"/>
+        </material>
+    </visual>
+</link>
 
 <joint name="base_link_to_base_footprint" type="fixed">
     <parent link="base_link"/>
