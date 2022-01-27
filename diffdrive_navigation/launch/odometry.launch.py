@@ -6,10 +6,10 @@ from launch.actions import DeclareLaunchArgument
 from ament_index_python.packages import get_package_share_directory
 
 def generate_launch_description():
-    pkg_share = get_package_share_directory('diffdrive_localization')
+    pkg_share = get_package_share_directory('diffdrive_navigation')
 
     wheel_odometry_node = Node(
-        package='diffdrive_localization',
+        package='diffdrive_navigation',
         executable='wheel_odometry',
         name='wheel_odometry',
         output='screen',

@@ -3,7 +3,7 @@ import os
 from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription
+from launch.actions import IncludeLaunchDescription, ExecuteProcess
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
 
@@ -20,6 +20,10 @@ def generate_launch_description():
         package='joy',
         executable='joy_node',
         name='joy',
+        parameters=[
+            {'autorepeat_rate': 0.0},
+            {'default_trig_val': False}
+        ],
         output='screen',
     )
 
@@ -30,17 +34,18 @@ def generate_launch_description():
         output='screen',
     )
 
-    # rviz_node = Node(
-    #     package='rviz2',
-    #     executable='rviz2',
-    #     name='rviz2',
-    #     output='screen',
-    #     arguments=['-d', os.path.join(ground_control_share, 'rviz', 'default.rviz')],
-    # )
+    # rviz launched as node may crush on start up
+    rviz = ExecuteProcess(
+        cmd=[
+            'rviz2',
+            '-d', os.path.join(ground_control_share, 'rviz', 'default.rviz'),
+        ],
+        output='screen',
+    )
 
     return LaunchDescription([
         load_description_launch,
-        # rviz_node,
+        rviz,
         joy_node,
         joy_control_node
     ])

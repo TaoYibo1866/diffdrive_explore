@@ -9,8 +9,8 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 
 def generate_launch_description():
     diffdrive_webots_share = get_package_share_directory('diffdrive_webots')
-    diffdrive_localization_share = get_package_share_directory('diffdrive_localization')
-    ground_control_share = get_package_share_directory('ground_control')
+    diffdrive_navigation_share = get_package_share_directory('diffdrive_navigation')
+    # ground_control_share = get_package_share_directory('ground_control')
 
     webots_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([os.path.join(diffdrive_webots_share, 'launch'), '/webots.launch.py']),
@@ -18,16 +18,16 @@ def generate_launch_description():
     )
 
     odometry_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([os.path.join(diffdrive_localization_share, 'launch'), '/odometry.launch.py']),
+        PythonLaunchDescriptionSource([os.path.join(diffdrive_navigation_share, 'launch'), '/odometry.launch.py']),
         launch_arguments={'use_sim_time': 'True'}.items(),
     )
 
-    ground_control_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([os.path.join(ground_control_share, 'launch'), '/ground_control.launch.py'])
-    )
+    # ground_control_launch = IncludeLaunchDescription(
+    #     PythonLaunchDescriptionSource([os.path.join(ground_control_share, 'launch'), '/ground_control.launch.py'])
+    # )
 
     return LaunchDescription([
         webots_launch,
         odometry_launch,
-        ground_control_launch
+        # ground_control_launch
     ])
