@@ -11,13 +11,13 @@ namespace diffdrive_webots_plugin
     robot_ = node->robot();
     left_encoder_ = NULL;
     right_encoder_ = NULL;
-    encoder_period_ = (int)robot_->getBasicTimeStep();
+    period_ = (int)robot_->getBasicTimeStep();
     prev_left_angle_ = 0;
     prev_right_angle = 0;
 
     // retrieve tags
     if (parameters.count("wheelEncoderPeriodMs"))
-      encoder_period_ = std::stoi(parameters["wheelEncoderPeriodMs"]);
+      period_ = std::stoi(parameters["wheelEncoderPeriodMs"]);
     else
       throw std::runtime_error("Must set wheelEncoderPeriodMs tag");
 
@@ -55,15 +55,16 @@ namespace diffdrive_webots_plugin
       throw std::runtime_error("Cannot find PositionSensor with name " + right_wheel_encoder_name);
     
     int timestep = (int)robot_->getBasicTimeStep();
-    if (encoder_period_ % timestep != 0)
+    if (period_ % timestep != 0)
       throw std::runtime_error("wheelEncoderPeriodMs must be integer multiple of basicTimeStep");
 
-    left_encoder_->enable(encoder_period_);
-    right_encoder_->enable(encoder_period_);
+    left_encoder_->enable(period_);
+    right_encoder_->enable(period_);
 
     prev_left_angle_ = left_encoder_->getValue();
     prev_right_angle = right_encoder_->getValue();
 
+    // JointState publisher
     joint_state_pub_ = node->create_publisher<sensor_msgs::msg::JointState>("joint_states", rclcpp::SensorDataQoS().reliable());
     joint_state_msg_.name.resize(2);
     joint_state_msg_.position.resize(2);
@@ -81,12 +82,12 @@ namespace diffdrive_webots_plugin
   {
     int64_t sim_time = (int64_t)(robot_->getTime() * 1e3);
 
-    if (sim_time % encoder_period_ == 0)
+    if (sim_time % period_ == 0)
     {
       double curr_left_angle = left_encoder_->getValue();
       double curr_right_angle = right_encoder_->getValue();
-      double left_wheel_speed = 1e3 * (curr_left_angle - prev_left_angle_) / encoder_period_;
-      double right_wheel_speed = 1e3 * (curr_right_angle - prev_right_angle) / encoder_period_;
+      double left_wheel_speed = 1e3 * (curr_left_angle - prev_left_angle_) / period_;
+      double right_wheel_speed = 1e3 * (curr_right_angle - prev_right_angle) / period_;
       prev_left_angle_ = curr_left_angle;
       prev_right_angle = curr_right_angle;
 

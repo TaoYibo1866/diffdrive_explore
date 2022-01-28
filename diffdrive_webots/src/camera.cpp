@@ -14,7 +14,7 @@ namespace diffdrive_webots_plugin
 
     // retrieve tags
     if (parameters.count("cameraPeriodMs"))
-      camera_period_ = std::stoi(parameters["cameraPeriodMs"]);
+      period_ = std::stoi(parameters["cameraPeriodMs"]);
     else
       throw std::runtime_error("Must set cameraPeriodMs tag");
 
@@ -37,11 +37,36 @@ namespace diffdrive_webots_plugin
     
     
     int timestep = (int)robot_->getBasicTimeStep();
-    if (camera_period_ % timestep != 0)
+    if (period_ % timestep != 0)
       throw std::runtime_error("cameraPeriodMs must be integer multiple of basicTimeStep");
 
-    camera_->enable(camera_period_);
+    camera_->enable(period_);
 
+    // CameraInfo publisher
+    rclcpp::QoS camera_info_qos(1);
+    camera_info_qos.reliable();
+    camera_info_qos.transient_local();
+    camera_info_qos.keep_last(1);
+    camera_info_pub_ = node_->create_publisher<sensor_msgs::msg::CameraInfo>("camera_info", camera_info_qos);
+    camera_info_msg_.header.stamp = node_->get_clock()->now();
+    camera_info_msg_.header.frame_id = frame_id;
+    camera_info_msg_.height = camera_->getHeight();
+    camera_info_msg_.width = camera_->getWidth();
+    camera_info_msg_.distortion_model = "plumb_bob";
+    const double focal_length = 0.5 * camera_->getWidth() * (1 / tan(0.5 * camera_->getFov()));
+    camera_info_msg_.d = {0.0, 0.0, 0.0, 0.0, 0.0};
+    camera_info_msg_.r = {1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0};
+    camera_info_msg_.k = {
+        focal_length, 0.0, (double)camera_->getWidth() / 2,
+        0.0, focal_length, (double)camera_->getHeight() / 2,
+        0.0, 0.0, 1.0};
+    camera_info_msg_.p = {
+        focal_length, 0.0, (double)camera_->getWidth() / 2, 0.0,
+        0.0, focal_length, (double)camera_->getHeight() / 2, 0.0,
+        0.0, 0.0, 1.0, 0.0};
+    camera_info_pub_->publish(camera_info_msg_);
+
+    // Image publisher
     image_pub_ = node->create_publisher<sensor_msgs::msg::Image>("image", rclcpp::SensorDataQoS().reliable());
     image_msg_.header.frame_id = frame_id;
     image_msg_.is_bigendian = false;
@@ -57,7 +82,7 @@ namespace diffdrive_webots_plugin
   {
     int64_t sim_time = (int64_t)(robot_->getTime() * 1e3);
 
-    if (sim_time % camera_period_ == 0)
+    if (sim_time % period_ == 0)
     {
       auto image = camera_->getImage();
       if (image)

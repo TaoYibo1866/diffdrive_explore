@@ -25,7 +25,7 @@ namespace diffdrive_webots_plugin
     webots::PositionSensor *left_encoder_;
     webots::PositionSensor *right_encoder_;
 
-    int encoder_period_;
+    int period_;
     double prev_left_angle_;
     double prev_right_angle;
   };

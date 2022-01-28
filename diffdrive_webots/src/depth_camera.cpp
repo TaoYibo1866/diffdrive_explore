@@ -11,11 +11,11 @@ namespace diffdrive_webots_plugin
     // initialize member variables
     node_ = node;
     robot_ = node->robot();
-    depth_camera_ = NULL;
+    range_finder_ = NULL;
 
     // retrieve tags
     if (parameters.count("depthCameraPeriodMs"))
-      depth_camera_period_ = std::stoi(parameters["depthCameraPeriodMs"]);
+      period_ = std::stoi(parameters["depthCameraPeriodMs"]);
     else
       throw std::runtime_error("Must set depthCameraPeriodMs tag");
 
@@ -32,17 +32,42 @@ namespace diffdrive_webots_plugin
       throw std::runtime_error("Must set frameID tag");
 
     // set webots device
-    depth_camera_ = robot_->getRangeFinder(depth_camera_name);
-    if (depth_camera_ == NULL)
+    range_finder_ = robot_->getRangeFinder(depth_camera_name);
+    if (range_finder_ == NULL)
       throw std::runtime_error("Cannot find DepthCamera with name " + depth_camera_name);
     
     
     int timestep = (int)robot_->getBasicTimeStep();
-    if (depth_camera_period_ % timestep != 0)
+    if (period_ % timestep != 0)
       throw std::runtime_error("depthCameraPeriodMs must be integer multiple of basicTimeStep");
 
-    depth_camera_->enable(depth_camera_period_);
+    range_finder_->enable(period_);
     
+    // CameraInfo publisher
+    rclcpp::QoS camera_info_qos(1);
+    camera_info_qos.reliable();
+    camera_info_qos.transient_local();
+    camera_info_qos.keep_last(1);
+    camera_info_pub_ = node_->create_publisher<sensor_msgs::msg::CameraInfo>("camera_info", camera_info_qos);
+    camera_info_msg_.header.stamp = node_->get_clock()->now();
+    camera_info_msg_.header.frame_id = frame_id;
+    camera_info_msg_.height = range_finder_->getHeight();
+    camera_info_msg_.width = range_finder_->getWidth();
+    camera_info_msg_.distortion_model = "plumb_bob";
+    const double focal_length = 0.5 * range_finder_->getWidth() * (1 / tan(0.5 * range_finder_->getFov()));
+    camera_info_msg_.d = {0.0, 0.0, 0.0, 0.0, 0.0};
+    camera_info_msg_.r = {1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0};
+    camera_info_msg_.k = {
+        focal_length, 0.0, (double)range_finder_->getWidth() / 2,
+        0.0, focal_length, (double)range_finder_->getHeight() / 2,
+        0.0, 0.0, 1.0};
+    camera_info_msg_.p = {
+        focal_length, 0.0, (double)range_finder_->getWidth() / 2, 0.0,
+        0.0, focal_length, (double)range_finder_->getHeight() / 2, 0.0,
+        0.0, 0.0, 1.0, 0.0};
+    camera_info_pub_->publish(camera_info_msg_);
+
+    // PointCloud publisher
     point_cloud_pub_ = node->create_publisher<sensor_msgs::msg::PointCloud2>("point_cloud", rclcpp::SensorDataQoS().reliable());
     point_cloud_msg_.header.frame_id = frame_id;
     point_cloud_msg_.fields.resize(3);
@@ -60,8 +85,8 @@ namespace diffdrive_webots_plugin
     point_cloud_msg_.fields[2].offset = 8;
     point_cloud_msg_.is_bigendian = false;
     point_cloud_msg_.is_dense = false;
-    int width = depth_camera_->getWidth();
-    int height = depth_camera_->getHeight();
+    const int width = range_finder_->getWidth();
+    const int height = range_finder_->getHeight();
     point_cloud_msg_.width = width;
     point_cloud_msg_.height = height;
     point_cloud_msg_.point_step = 3 * sizeof(float);
@@ -73,19 +98,19 @@ namespace diffdrive_webots_plugin
   {
     int64_t sim_time = (int64_t)(robot_->getTime() * 1e3);
 
-    if (sim_time % depth_camera_period_ == 0)
+    if (sim_time % period_ == 0)
     {
-      auto image = depth_camera_->getRangeImage();
+      auto image = range_finder_->getRangeImage();
       if (image)
       {
         point_cloud_msg_.header.stamp = node_->get_clock()->now();
 
-        int width = depth_camera_->getWidth();
-        int height = depth_camera_->getHeight();
-        float hfov = depth_camera_->getFov(); 
-        float cx = width / 2.0;
-        float cy = height / 2.0;
-        float f = 0.5 * width * (1 / tan(0.5 * hfov));
+        const int width = camera_info_msg_.width;
+        const int height = camera_info_msg_.height;
+        const float cx = camera_info_msg_.k[2];
+        const float cy = camera_info_msg_.k[5];
+        const float fx = camera_info_msg_.k[0];
+        const float fy = camera_info_msg_.k[4];
 
         float* data = (float*)point_cloud_msg_.data.data();
         for (int j = 0; j < height; j++)
@@ -94,8 +119,8 @@ namespace diffdrive_webots_plugin
           {
             int idx = j * width + i;
             float x = image[idx];
-            float y = -(i - cx) * x / f;
-            float z = -(j - cy) * x / f;
+            float y = -(i - cx) * x / fx;
+            float z = -(j - cy) * x / fy;
             memcpy(data + idx * 3    , &x, sizeof(float));
             memcpy(data + idx * 3 + 1, &y, sizeof(float));
             memcpy(data + idx * 3 + 2, &z, sizeof(float));

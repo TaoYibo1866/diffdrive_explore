@@ -53,6 +53,7 @@ namespace diffdrive_webots_plugin
     right_motor_->setPosition(INFINITY);
     right_motor_->setVelocity(0);
 
+    // CmdVel subscriber
     cmd_vel_sub_ = node->create_subscription<geometry_msgs::msg::Twist>("cmd_vel", rclcpp::SensorDataQoS().reliable(), std::bind(&DifferentialControl::cmdVelCallback, this, _1));
   }
 

@@ -24,7 +24,7 @@ namespace diffdrive_webots_plugin
     webots::Supervisor *robot_;
     webots::Lidar *lidar_;
 
-    int lidar_period_;
+    int period_;
   };
 }
 

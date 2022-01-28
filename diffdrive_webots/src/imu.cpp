@@ -15,7 +15,7 @@ namespace diffdrive_webots_plugin
 
     // retrieve tags
     if (parameters.count("imuPeriodMs"))
-      imu_period_ = std::stoi(parameters["imuPeriodMs"]);
+      period_ = std::stoi(parameters["imuPeriodMs"]);
     else
       throw std::runtime_error("Must set imuPeriodMs tag");
 
@@ -57,13 +57,14 @@ namespace diffdrive_webots_plugin
       throw std::runtime_error("Cannot find inertialUnit with name " + inertial_unit_name);
     
     int timestep = (int)robot_->getBasicTimeStep();
-    if (imu_period_ % timestep != 0)
+    if (period_ % timestep != 0)
       throw std::runtime_error("imuPeriodMs must be integer multiple of basicTimeStep");
 
-    accelerometer_->enable(imu_period_);
-    gyro_->enable(imu_period_);
-    inertial_unit_->enable(imu_period_);
+    accelerometer_->enable(period_);
+    gyro_->enable(period_);
+    inertial_unit_->enable(period_);
 
+    // Imu publisher
     imu_pub_ = node->create_publisher<sensor_msgs::msg::Imu>("imu", rclcpp::SensorDataQoS().reliable());
     imu_msg_.header.frame_id = frame_id;
     imu_msg_.orientation_covariance          = {1e-6   , 0.0    , 0.0    ,
@@ -84,7 +85,7 @@ namespace diffdrive_webots_plugin
   {
     int64_t sim_time = (int64_t)(robot_->getTime() * 1e3);
 
-    if (sim_time % imu_period_ == 0)
+    if (sim_time % period_ == 0)
     {
       const double* acc = accelerometer_->getValues();
       const double* ome = gyro_->getValues();

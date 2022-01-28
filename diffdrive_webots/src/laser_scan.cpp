@@ -14,7 +14,7 @@ namespace diffdrive_webots_plugin
 
     // retrieve tags
     if (parameters.count("laserScanPeriodMs"))
-      lidar_period_ = std::stoi(parameters["laserScanPeriodMs"]);
+      period_ = std::stoi(parameters["laserScanPeriodMs"]);
     else
       throw std::runtime_error("Must set laserScanPeriodMs tag");
 
@@ -37,17 +37,18 @@ namespace diffdrive_webots_plugin
     
     
     int timestep = (int)robot_->getBasicTimeStep();
-    if (lidar_period_ % timestep != 0)
+    if (period_ % timestep != 0)
       throw std::runtime_error("laserScanPeriodMs must be integer multiple of basicTimeStep");
 
-    lidar_->enable(lidar_period_);
+    lidar_->enable(period_);
 
+    // LaserScan publisher
     scan_pub_ = node->create_publisher<sensor_msgs::msg::LaserScan>("scan", rclcpp::SensorDataQoS().reliable());
     scan_msg_.header.frame_id = frame_id;
-    scan_msg_.scan_time = (double)lidar_period_ / 1e3;
+    scan_msg_.scan_time = (double)period_ / 1e3;
     const int resolution = lidar_->getHorizontalResolution();
     scan_msg_.angle_increment = -lidar_->getFov() / resolution;
-    scan_msg_.time_increment = (double)lidar_period_ / (1e3 * resolution);
+    scan_msg_.time_increment = (double)period_ / (1e3 * resolution);
     scan_msg_.angle_min = lidar_->getFov() / 2.0 - scan_msg_.angle_increment;
     scan_msg_.angle_max =-lidar_->getFov() / 2.0;
     scan_msg_.ranges.resize(resolution);
@@ -58,7 +59,7 @@ namespace diffdrive_webots_plugin
   {
     int64_t sim_time = (int64_t)(robot_->getTime() * 1e3);
 
-    if (sim_time % lidar_period_ == 0)
+    if (sim_time % period_ == 0)
     {
       auto scan = lidar_->getLayerRangeImage(0);
       if (scan)

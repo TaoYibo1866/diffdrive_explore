@@ -30,7 +30,7 @@ namespace diffdrive_webots_plugin
     webots::Gyro *gyro_;
     webots::InertialUnit *inertial_unit_;
 
-    int imu_period_;
+    int period_;
   };
 }
 
