@@ -54,54 +54,58 @@ namespace diffdrive_webots_plugin
     cy_ = height / 2.0;
     fx_ = 0.5 * width * (1 / tan(0.5 * hfov));
     fy_ = fx_;
-    point_cloud_.header.frame_id = frame_id;
-    point_cloud_.width = width;
-    point_cloud_.height = height;
-    point_cloud_.fields.resize(3);
-    point_cloud_.fields[0].name = "x";
-    point_cloud_.fields[0].datatype = sensor_msgs::msg::PointField::FLOAT32;
-    point_cloud_.fields[0].count = 1;
-    point_cloud_.fields[0].offset = 0;
-    point_cloud_.fields[1].name = "y";
-    point_cloud_.fields[1].datatype = sensor_msgs::msg::PointField::FLOAT32;
-    point_cloud_.fields[1].count = 1;
-    point_cloud_.fields[1].offset = 4;
-    point_cloud_.fields[2].name = "z";
-    point_cloud_.fields[2].datatype = sensor_msgs::msg::PointField::FLOAT32;
-    point_cloud_.fields[2].count = 1;
-    point_cloud_.fields[2].offset = 8;
-    point_cloud_.is_bigendian = false;
-    point_cloud_.point_step = 3 * sizeof(float);
-    point_cloud_.row_step = width * 3 * sizeof(float);
-    point_cloud_.data.resize(width * height * 3 * sizeof(float));
-    point_cloud_.is_dense = false;
+    point_cloud_msg_.header.frame_id = frame_id;
+    point_cloud_msg_.width = width;
+    point_cloud_msg_.height = height;
+    point_cloud_msg_.fields.resize(3);
+    point_cloud_msg_.fields[0].name = "x";
+    point_cloud_msg_.fields[0].datatype = sensor_msgs::msg::PointField::FLOAT32;
+    point_cloud_msg_.fields[0].count = 1;
+    point_cloud_msg_.fields[0].offset = 0;
+    point_cloud_msg_.fields[1].name = "y";
+    point_cloud_msg_.fields[1].datatype = sensor_msgs::msg::PointField::FLOAT32;
+    point_cloud_msg_.fields[1].count = 1;
+    point_cloud_msg_.fields[1].offset = 4;
+    point_cloud_msg_.fields[2].name = "z";
+    point_cloud_msg_.fields[2].datatype = sensor_msgs::msg::PointField::FLOAT32;
+    point_cloud_msg_.fields[2].count = 1;
+    point_cloud_msg_.fields[2].offset = 8;
+    point_cloud_msg_.is_bigendian = false;
+    point_cloud_msg_.point_step = 3 * sizeof(float);
+    point_cloud_msg_.row_step = width * 3 * sizeof(float);
+    point_cloud_msg_.data.resize(width * height * 3 * sizeof(float));
+    point_cloud_msg_.is_dense = false;
     point_cloud_pub_ = node->create_publisher<sensor_msgs::msg::PointCloud2>("point_cloud", rclcpp::SensorDataQoS().reliable());
   }
 
   void DepthCamera::step()
   {
     int64_t sim_time = (int64_t)(robot_->getTime() * 1e3);
+
     if (sim_time % depth_camera_period_ == 0)
     {
-      point_cloud_.header.stamp = node_->get_clock()->now();
-      int width = depth_camera_->getWidth();
-      int height = depth_camera_->getHeight();
-      const float* range_image = depth_camera_->getRangeImage();
-      float* data = (float*)point_cloud_.data.data();
-      for (int j = 0; j < height; j++)
+      auto range_image = depth_camera_->getRangeImage();
+      if (range_image)
       {
-        for (int i = 0; i < width; i++)
+        point_cloud_msg_.header.stamp = node_->get_clock()->now();
+        int width = depth_camera_->getWidth();
+        int height = depth_camera_->getHeight();
+        float* data = (float*)point_cloud_msg_.data.data();
+        for (int j = 0; j < height; j++)
         {
-          int idx = j * width + i;
-          float x = range_image[idx];
-          float y = -(i - cx_) * x / fx_;
-          float z = -(j - cy_) * x / fy_;
-          memcpy(data + idx * 3    , &x, sizeof(float));
-          memcpy(data + idx * 3 + 1, &y, sizeof(float));
-          memcpy(data + idx * 3 + 2, &z, sizeof(float));
+          for (int i = 0; i < width; i++)
+          {
+            int idx = j * width + i;
+            float x = range_image[idx];
+            float y = -(i - cx_) * x / fx_;
+            float z = -(j - cy_) * x / fy_;
+            memcpy(data + idx * 3    , &x, sizeof(float));
+            memcpy(data + idx * 3 + 1, &y, sizeof(float));
+            memcpy(data + idx * 3 + 2, &z, sizeof(float));
+          }
         }
+        point_cloud_pub_->publish(point_cloud_msg_);
       }
-      point_cloud_pub_->publish(point_cloud_);
     }
 
   }

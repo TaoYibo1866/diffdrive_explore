@@ -42,16 +42,16 @@ namespace diffdrive_webots_plugin
 
     lidar_->enable(lidar_period_);
 
-    scan_.header.frame_id = frame_id;
+    scan_msg_.header.frame_id = frame_id;
     const int resolution = lidar_->getHorizontalResolution();
-    scan_.angle_increment = -lidar_->getFov() / resolution;
-    scan_.angle_min = lidar_->getFov() / 2.0 - scan_.angle_increment;
-    scan_.angle_max =-lidar_->getFov() / 2.0;
-    scan_.range_min = lidar_->getMinRange();
-    scan_.range_max = lidar_->getMaxRange();
-    scan_.time_increment = (double)lidar_period_ / (1e3 * resolution);
-    scan_.scan_time = (double)lidar_period_ / 1e3;
-    scan_.ranges.resize(resolution);
+    scan_msg_.angle_increment = -lidar_->getFov() / resolution;
+    scan_msg_.angle_min = lidar_->getFov() / 2.0 - scan_msg_.angle_increment;
+    scan_msg_.angle_max =-lidar_->getFov() / 2.0;
+    scan_msg_.range_min = lidar_->getMinRange();
+    scan_msg_.range_max = lidar_->getMaxRange();
+    scan_msg_.time_increment = (double)lidar_period_ / (1e3 * resolution);
+    scan_msg_.scan_time = (double)lidar_period_ / 1e3;
+    scan_msg_.ranges.resize(resolution);
 
     scan_pub_ = node->create_publisher<sensor_msgs::msg::LaserScan>("scan", rclcpp::SensorDataQoS().reliable());
   }
@@ -62,9 +62,13 @@ namespace diffdrive_webots_plugin
 
     if (sim_time % lidar_period_ == 0)
     {
-      scan_.header.stamp = node_->get_clock()->now();
-      memcpy(scan_.ranges.data(), lidar_->getLayerRangeImage(0), scan_.ranges.size() * sizeof(float));
-      scan_pub_->publish(scan_);
+      auto scan = lidar_->getLayerRangeImage(0);
+      if (scan)
+      {
+        scan_msg_.header.stamp = node_->get_clock()->now();
+        memcpy(scan_msg_.ranges.data(), scan, scan_msg_.ranges.size() * sizeof(float));
+        scan_pub_->publish(scan_msg_);
+      }
     }
 
   }

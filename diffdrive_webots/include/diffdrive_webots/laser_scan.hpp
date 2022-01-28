@@ -19,7 +19,7 @@ namespace diffdrive_webots_plugin
   private:
     webots_ros2_driver::WebotsNode *node_;
     rclcpp::Publisher<sensor_msgs::msg::LaserScan>::SharedPtr scan_pub_;
-    sensor_msgs::msg::LaserScan scan_;
+    sensor_msgs::msg::LaserScan scan_msg_;
 
     webots::Supervisor *robot_;
     webots::Lidar *lidar_;

@@ -19,7 +19,7 @@ namespace diffdrive_webots_plugin
   private:
     webots_ros2_driver::WebotsNode *node_;
     rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr image_pub_;
-    sensor_msgs::msg::Image image_;
+    sensor_msgs::msg::Image image_msg_;
 
     webots::Supervisor *robot_;
     webots::Camera *camera_;

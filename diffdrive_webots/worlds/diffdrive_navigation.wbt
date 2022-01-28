@@ -258,7 +258,7 @@ DiffDrive {
       width 640
       height 360
       minRange 0.5
-      maxRange 6
+      maxRange 8
     }
     Lidar {
       translation 0 0 0.2

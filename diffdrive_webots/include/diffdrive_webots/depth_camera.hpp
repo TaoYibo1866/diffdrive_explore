@@ -19,7 +19,7 @@ namespace diffdrive_webots_plugin
   private:
     webots_ros2_driver::WebotsNode *node_;
     rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr point_cloud_pub_;
-    sensor_msgs::msg::PointCloud2 point_cloud_;
+    sensor_msgs::msg::PointCloud2 point_cloud_msg_;
 
     webots::Supervisor *robot_;
     webots::RangeFinder *depth_camera_;

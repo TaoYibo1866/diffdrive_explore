@@ -42,13 +42,13 @@ namespace diffdrive_webots_plugin
 
     camera_->enable(camera_period_);
 
-    image_.header.frame_id = frame_id;
-    image_.width = camera_->getWidth();
-    image_.height = camera_->getHeight();
-    image_.is_bigendian = false;
-    image_.step = 4 * camera_->getWidth();
-    image_.data.resize(4 * camera_->getWidth() * camera_->getHeight());
-    image_.encoding = sensor_msgs::image_encodings::BGRA8;
+    image_msg_.header.frame_id = frame_id;
+    image_msg_.width = camera_->getWidth();
+    image_msg_.height = camera_->getHeight();
+    image_msg_.is_bigendian = false;
+    image_msg_.step = 4 * camera_->getWidth();
+    image_msg_.data.resize(4 * camera_->getWidth() * camera_->getHeight());
+    image_msg_.encoding = sensor_msgs::image_encodings::BGRA8;
 
     image_pub_ = node->create_publisher<sensor_msgs::msg::Image>("image", rclcpp::SensorDataQoS().reliable());
   }
@@ -59,9 +59,13 @@ namespace diffdrive_webots_plugin
 
     if (sim_time % camera_period_ == 0)
     {
-      image_.header.stamp = node_->get_clock()->now();
-      memcpy(image_.data.data(), camera_->getImage(), image_.data.size() * sizeof(uint8_t));
-      image_pub_->publish(image_);
+      auto image = camera_->getImage();
+      if (image)
+      {
+        image_msg_.header.stamp = node_->get_clock()->now();
+        memcpy(image_msg_.data.data(), image, image_msg_.data.size() * sizeof(uint8_t));
+        image_pub_->publish(image_msg_);
+      }
     }
 
   }
