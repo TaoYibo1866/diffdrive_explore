@@ -1,6 +1,7 @@
 #include "diffdrive_webots/depth_camera.hpp"
 #include <sensor_msgs/image_encodings.hpp>
 
+
 using std::placeholders::_1;
 
 namespace diffdrive_webots_plugin
@@ -11,6 +12,10 @@ namespace diffdrive_webots_plugin
     node_ = node;
     robot_ = node->robot();
     depth_camera_ = NULL;
+    cx_ = 0;
+    cy_ = 0;
+    fx_ = 0;
+    fy_ = 0;
 
     // retrieve tags
     if (parameters.count("depthCameraPeriodMs"))
@@ -41,27 +46,62 @@ namespace diffdrive_webots_plugin
       throw std::runtime_error("depthCameraPeriodMs must be integer multiple of basicTimeStep");
 
     depth_camera_->enable(depth_camera_period_);
-
-    depth_image_.header.frame_id = frame_id;
-    depth_image_.width = depth_camera_->getWidth();
-    depth_image_.height = depth_camera_->getHeight();
-    depth_image_.is_bigendian = false;
-    depth_image_.step = 4 * depth_camera_->getWidth();
-    depth_image_.data.resize(4 * depth_camera_->getWidth() * depth_camera_->getHeight());
-    depth_image_.encoding = sensor_msgs::image_encodings::TYPE_32FC1;
-
-    depth_image_pub_ = node->create_publisher<sensor_msgs::msg::Image>("depth_image", rclcpp::SensorDataQoS().reliable());
+    
+    int width = depth_camera_->getWidth();
+    int height = depth_camera_->getHeight();
+    float hfov = depth_camera_->getFov(); 
+    cx_ = width / 2.0;
+    cy_ = height / 2.0;
+    fx_ = 0.5 * width * (1 / tan(0.5 * hfov));
+    fy_ = fx_;
+    point_cloud_.header.frame_id = frame_id;
+    point_cloud_.width = width;
+    point_cloud_.height = height;
+    point_cloud_.fields.resize(3);
+    point_cloud_.fields[0].name = "x";
+    point_cloud_.fields[0].datatype = sensor_msgs::msg::PointField::FLOAT32;
+    point_cloud_.fields[0].count = 1;
+    point_cloud_.fields[0].offset = 0;
+    point_cloud_.fields[1].name = "y";
+    point_cloud_.fields[1].datatype = sensor_msgs::msg::PointField::FLOAT32;
+    point_cloud_.fields[1].count = 1;
+    point_cloud_.fields[1].offset = 4;
+    point_cloud_.fields[2].name = "z";
+    point_cloud_.fields[2].datatype = sensor_msgs::msg::PointField::FLOAT32;
+    point_cloud_.fields[2].count = 1;
+    point_cloud_.fields[2].offset = 8;
+    point_cloud_.is_bigendian = false;
+    point_cloud_.point_step = 3 * sizeof(float);
+    point_cloud_.row_step = width * 3 * sizeof(float);
+    point_cloud_.data.resize(width * height * 3 * sizeof(float));
+    point_cloud_.is_dense = false;
+    point_cloud_pub_ = node->create_publisher<sensor_msgs::msg::PointCloud2>("point_cloud", rclcpp::SensorDataQoS().reliable());
   }
 
   void DepthCamera::step()
   {
     int64_t sim_time = (int64_t)(robot_->getTime() * 1e3);
-
     if (sim_time % depth_camera_period_ == 0)
     {
-      depth_image_.header.stamp = node_->get_clock()->now();
-      memcpy(depth_image_.data.data(), depth_camera_->getRangeImage(), depth_image_.data.size()* sizeof(uint8_t));
-      depth_image_pub_->publish(depth_image_);
+      point_cloud_.header.stamp = node_->get_clock()->now();
+      int width = depth_camera_->getWidth();
+      int height = depth_camera_->getHeight();
+      const float* range_image = depth_camera_->getRangeImage();
+      float* data = (float*)point_cloud_.data.data();
+      for (int j = 0; j < height; j++)
+      {
+        for (int i = 0; i < width; i++)
+        {
+          int idx = j * width + i;
+          float x = range_image[idx];
+          float y = -(i - cx_) * x / fx_;
+          float z = -(j - cy_) * x / fy_;
+          memcpy(data + idx * 3    , &x, sizeof(float));
+          memcpy(data + idx * 3 + 1, &y, sizeof(float));
+          memcpy(data + idx * 3 + 2, &z, sizeof(float));
+        }
+      }
+      point_cloud_pub_->publish(point_cloud_);
     }
 
   }

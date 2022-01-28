@@ -23,7 +23,7 @@
         </plugin>
 
         <plugin type="diffdrive_webots_plugin::DepthCamera">
-            <depthCameraPeriodMs>10</depthCameraPeriodMs>
+            <depthCameraPeriodMs>20</depthCameraPeriodMs>
             <depthCameraName>depth_camera</depthCameraName>
             <frameID>camera</frameID>
         </plugin>

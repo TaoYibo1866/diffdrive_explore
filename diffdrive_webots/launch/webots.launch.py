@@ -33,7 +33,7 @@ def generate_launch_description():
         executable='static_transform_publisher',
         name='static_transform_publisher',
         output='screen',
-        arguments=['0', '0', '0.1', '0', '-0.2617996938995747', '0', 'base_link', 'camera'],
+        arguments=['0', '0', '0.1', '0', '-0.1', '0', 'base_link', 'camera'],
     )
 
     static_transform_publisher_node2 = Node(

@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.5)
 project(diffdrive_webots)
 
+set(CMAKE_BUILD_TYPE "Release")
+
 # Default to C99
 if(NOT CMAKE_C_STANDARD)
   set(CMAKE_C_STANDARD 99)
@@ -59,6 +61,15 @@ ament_export_libraries(
   diffdrive_webots_plugin
 )
 # plugins end
+
+add_executable(point_cloud_subscribe test/point_cloud_subscribe.cpp)
+ament_target_dependencies(
+  point_cloud_subscribe
+  rclcpp 
+  sensor_msgs
+)
+
+install(TARGETS point_cloud_subscribe DESTINATION lib/${PROJECT_NAME})
 
 # install regular files
 install(

@@ -12,8 +12,8 @@ WorldInfo {
   ]
 }
 Viewpoint {
-  orientation -0.006249714041230396 0.9999412263181623 0.008859175115787465 1.228805371111284
-  position -7.533449958734376 0.22681529655066837 21.798070039157246
+  orientation 0.0012499970323641301 0.9999971050577322 -0.002056060206765196 1.0925025700784528
+  position -9.750194672892237 -0.5878639967866576 18.993805896061538
 }
 TexturedBackground {
 }
@@ -22,7 +22,12 @@ TexturedBackgroundLight {
 RectangleArena {
   floorSize 10 10
   floorTileSize 1 1
-  wallHeight 2
+  wallHeight 3
+  wallAppearance PBRAppearance {
+    baseColor 0.2 0 0
+    roughness 1
+    metalness 0
+  }
 }
 DEF OBSTACLES Group {
   children [
@@ -235,7 +240,7 @@ DiffDrive {
     }
     RangeFinder {
       translation 0 0 0.1
-      rotation 0 -1 0 0.2617996938995747
+      rotation 0 1 0 -0.1
       children [
         Shape {
           appearance PBRAppearance {
@@ -250,10 +255,10 @@ DiffDrive {
       ]
       name "depth_camera"
       fieldOfView 1.1344
-      width 1280
-      height 720
+      width 640
+      height 360
       minRange 0.5
-      maxRange 8
+      maxRange 6
     }
     Lidar {
       translation 0 0 0.2
