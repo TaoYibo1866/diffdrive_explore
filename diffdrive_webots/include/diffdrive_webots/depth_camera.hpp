@@ -25,10 +25,6 @@ namespace diffdrive_webots_plugin
     webots::RangeFinder *depth_camera_;
 
     int depth_camera_period_;
-    float cx_;
-    float cy_;
-    float fx_;
-    float fy_;
   };
 }
 

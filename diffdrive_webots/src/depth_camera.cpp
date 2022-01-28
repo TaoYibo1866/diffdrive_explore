@@ -12,10 +12,6 @@ namespace diffdrive_webots_plugin
     node_ = node;
     robot_ = node->robot();
     depth_camera_ = NULL;
-    cx_ = 0;
-    cy_ = 0;
-    fx_ = 0;
-    fy_ = 0;
 
     // retrieve tags
     if (parameters.count("depthCameraPeriodMs"))
@@ -47,16 +43,8 @@ namespace diffdrive_webots_plugin
 
     depth_camera_->enable(depth_camera_period_);
     
-    int width = depth_camera_->getWidth();
-    int height = depth_camera_->getHeight();
-    float hfov = depth_camera_->getFov(); 
-    cx_ = width / 2.0;
-    cy_ = height / 2.0;
-    fx_ = 0.5 * width * (1 / tan(0.5 * hfov));
-    fy_ = fx_;
+    point_cloud_pub_ = node->create_publisher<sensor_msgs::msg::PointCloud2>("point_cloud", rclcpp::SensorDataQoS().reliable());
     point_cloud_msg_.header.frame_id = frame_id;
-    point_cloud_msg_.width = width;
-    point_cloud_msg_.height = height;
     point_cloud_msg_.fields.resize(3);
     point_cloud_msg_.fields[0].name = "x";
     point_cloud_msg_.fields[0].datatype = sensor_msgs::msg::PointField::FLOAT32;
@@ -71,11 +59,14 @@ namespace diffdrive_webots_plugin
     point_cloud_msg_.fields[2].count = 1;
     point_cloud_msg_.fields[2].offset = 8;
     point_cloud_msg_.is_bigendian = false;
+    point_cloud_msg_.is_dense = false;
+    int width = depth_camera_->getWidth();
+    int height = depth_camera_->getHeight();
+    point_cloud_msg_.width = width;
+    point_cloud_msg_.height = height;
     point_cloud_msg_.point_step = 3 * sizeof(float);
     point_cloud_msg_.row_step = width * 3 * sizeof(float);
     point_cloud_msg_.data.resize(width * height * 3 * sizeof(float));
-    point_cloud_msg_.is_dense = false;
-    point_cloud_pub_ = node->create_publisher<sensor_msgs::msg::PointCloud2>("point_cloud", rclcpp::SensorDataQoS().reliable());
   }
 
   void DepthCamera::step()
@@ -84,21 +75,27 @@ namespace diffdrive_webots_plugin
 
     if (sim_time % depth_camera_period_ == 0)
     {
-      auto range_image = depth_camera_->getRangeImage();
-      if (range_image)
+      auto image = depth_camera_->getRangeImage();
+      if (image)
       {
         point_cloud_msg_.header.stamp = node_->get_clock()->now();
+
         int width = depth_camera_->getWidth();
         int height = depth_camera_->getHeight();
+        float hfov = depth_camera_->getFov(); 
+        float cx = width / 2.0;
+        float cy = height / 2.0;
+        float f = 0.5 * width * (1 / tan(0.5 * hfov));
+
         float* data = (float*)point_cloud_msg_.data.data();
         for (int j = 0; j < height; j++)
         {
           for (int i = 0; i < width; i++)
           {
             int idx = j * width + i;
-            float x = range_image[idx];
-            float y = -(i - cx_) * x / fx_;
-            float z = -(j - cy_) * x / fy_;
+            float x = image[idx];
+            float y = -(i - cx) * x / f;
+            float z = -(j - cy) * x / f;
             memcpy(data + idx * 3    , &x, sizeof(float));
             memcpy(data + idx * 3 + 1, &y, sizeof(float));
             memcpy(data + idx * 3 + 2, &z, sizeof(float));

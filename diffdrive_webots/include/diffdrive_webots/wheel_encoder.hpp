@@ -19,7 +19,7 @@ namespace diffdrive_webots_plugin
   private:
     webots_ros2_driver::WebotsNode *node_;
     rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr joint_state_pub_;
-    sensor_msgs::msg::JointState joint_state_;
+    sensor_msgs::msg::JointState joint_state_msg_;
 
     webots::Supervisor *robot_;
     webots::PositionSensor *left_encoder_;

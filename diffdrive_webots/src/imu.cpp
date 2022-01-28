@@ -64,20 +64,20 @@ namespace diffdrive_webots_plugin
     gyro_->enable(imu_period_);
     inertial_unit_->enable(imu_period_);
 
-    imu_.header.frame_id = frame_id;
-    imu_.orientation_covariance          = {1e-6   , 0.0    , 0.0    ,
-                                            0.0    , 1e-6   , 0.0    ,
-                                            0.0    , 0.0    , 1e-6   };
-
-    imu_.angular_velocity_covariance     = {1e-6   , 0.0    , 0.0    ,
-                                            0.0    , 1e-6   , 0.0    ,
-                                            0.0    , 0.0    , 1e-6   };
-
-    imu_.linear_acceleration_covariance  = {1e-6   , 0.0    , 0.0    ,
-                                            0.0    , 1e-6   , 0.0    ,
-                                            0.0    , 0.0    , 1e-6   };
-
     imu_pub_ = node->create_publisher<sensor_msgs::msg::Imu>("imu", rclcpp::SensorDataQoS().reliable());
+    imu_msg_.header.frame_id = frame_id;
+    imu_msg_.orientation_covariance          = {1e-6   , 0.0    , 0.0    ,
+                                                0.0    , 1e-6   , 0.0    ,
+                                                0.0    , 0.0    , 1e-6   };
+
+    imu_msg_.angular_velocity_covariance     = {1e-6   , 0.0    , 0.0    ,
+                                                0.0    , 1e-6   , 0.0    ,
+                                                0.0    , 0.0    , 1e-6   };
+
+    imu_msg_.linear_acceleration_covariance  = {1e-6   , 0.0    , 0.0    ,
+                                                0.0    , 1e-6   , 0.0    ,
+                                                0.0    , 0.0    , 1e-6   };
+
   }
 
   void IMU::step()
@@ -90,21 +90,21 @@ namespace diffdrive_webots_plugin
       const double* ome = gyro_->getValues();
       const double* att = inertial_unit_->getQuaternion();
 
-      imu_.header.stamp = node_->get_clock()->now();
-      imu_.orientation
+      imu_msg_.header.stamp = node_->get_clock()->now();
+      imu_msg_.orientation
         .set__x(att[0])
         .set__y(att[1])
         .set__z(att[2])
         .set__w(att[3]);
-      imu_.angular_velocity
+      imu_msg_.angular_velocity
         .set__x(ome[0])
         .set__y(ome[1])
         .set__z(ome[2]);
-      imu_.linear_acceleration
+      imu_msg_.linear_acceleration
         .set__x(acc[0])
         .set__y(acc[1])
         .set__z(acc[2]);
-      imu_pub_->publish(imu_);
+      imu_pub_->publish(imu_msg_);
     }
 
   }

@@ -23,7 +23,7 @@ namespace diffdrive_webots_plugin
     webots_ros2_driver::WebotsNode *node_;
     rclcpp::Publisher<sensor_msgs::msg::Imu>::SharedPtr imu_pub_;
 
-    sensor_msgs::msg::Imu imu_;
+    sensor_msgs::msg::Imu imu_msg_;
     
     webots::Supervisor *robot_;
     webots::Accelerometer *accelerometer_;

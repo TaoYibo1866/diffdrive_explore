@@ -64,17 +64,17 @@ namespace diffdrive_webots_plugin
     prev_left_angle_ = left_encoder_->getValue();
     prev_right_angle = right_encoder_->getValue();
 
-    joint_state_.name.resize(2);
-    joint_state_.position.resize(2);
-    joint_state_.velocity.resize(2);
-    joint_state_.name[0] = left_wheel_joint_name;
-    joint_state_.name[1] = right_wheel_joint_name;
-    joint_state_.position[0] = 0.0;
-    joint_state_.position[1] = 0.0;
-    joint_state_.velocity[0] = 0.0;
-    joint_state_.velocity[1] = 0.0;
-
     joint_state_pub_ = node->create_publisher<sensor_msgs::msg::JointState>("joint_states", rclcpp::SensorDataQoS().reliable());
+    joint_state_msg_.name.resize(2);
+    joint_state_msg_.position.resize(2);
+    joint_state_msg_.velocity.resize(2);
+    joint_state_msg_.name[0] = left_wheel_joint_name;
+    joint_state_msg_.name[1] = right_wheel_joint_name;
+    joint_state_msg_.position[0] = 0.0;
+    joint_state_msg_.position[1] = 0.0;
+    joint_state_msg_.velocity[0] = 0.0;
+    joint_state_msg_.velocity[1] = 0.0;
+
   }
 
   void WheelEncoder::step()
@@ -90,12 +90,12 @@ namespace diffdrive_webots_plugin
       prev_left_angle_ = curr_left_angle;
       prev_right_angle = curr_right_angle;
 
-      joint_state_.header.stamp = node_->get_clock()->now();
-      joint_state_.position[0] = curr_left_angle;
-      joint_state_.position[1] = curr_right_angle;
-      joint_state_.velocity[0] = left_wheel_speed;
-      joint_state_.velocity[1] = right_wheel_speed;
-      joint_state_pub_->publish(joint_state_);
+      joint_state_msg_.header.stamp = node_->get_clock()->now();
+      joint_state_msg_.position[0] = curr_left_angle;
+      joint_state_msg_.position[1] = curr_right_angle;
+      joint_state_msg_.velocity[0] = left_wheel_speed;
+      joint_state_msg_.velocity[1] = right_wheel_speed;
+      joint_state_pub_->publish(joint_state_msg_);
     }
 
   }

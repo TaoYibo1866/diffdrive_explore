@@ -42,15 +42,15 @@ namespace diffdrive_webots_plugin
 
     camera_->enable(camera_period_);
 
+    image_pub_ = node->create_publisher<sensor_msgs::msg::Image>("image", rclcpp::SensorDataQoS().reliable());
     image_msg_.header.frame_id = frame_id;
+    image_msg_.is_bigendian = false;
+    image_msg_.encoding = sensor_msgs::image_encodings::BGRA8;
     image_msg_.width = camera_->getWidth();
     image_msg_.height = camera_->getHeight();
-    image_msg_.is_bigendian = false;
     image_msg_.step = 4 * camera_->getWidth();
     image_msg_.data.resize(4 * camera_->getWidth() * camera_->getHeight());
-    image_msg_.encoding = sensor_msgs::image_encodings::BGRA8;
 
-    image_pub_ = node->create_publisher<sensor_msgs::msg::Image>("image", rclcpp::SensorDataQoS().reliable());
   }
 
   void Camera::step()
