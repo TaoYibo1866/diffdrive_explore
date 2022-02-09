@@ -1,6 +1,8 @@
 #include "diffdrive_webots/laser_scan.hpp"
 #include <sensor_msgs/image_encodings.hpp>
 
+#include <algorithm>
+
 using std::placeholders::_1;
 
 namespace diffdrive_webots_plugin
@@ -47,10 +49,10 @@ namespace diffdrive_webots_plugin
     scan_msg_.header.frame_id = frame_id;
     scan_msg_.scan_time = (double)period_ / 1e3;
     const int resolution = lidar_->getHorizontalResolution();
-    scan_msg_.angle_increment = -lidar_->getFov() / resolution;
+    scan_msg_.angle_increment = lidar_->getFov() / (resolution - 1);
     scan_msg_.time_increment = (double)period_ / (1e3 * resolution);
-    scan_msg_.angle_min = lidar_->getFov() / 2.0 - scan_msg_.angle_increment;
-    scan_msg_.angle_max =-lidar_->getFov() / 2.0;
+    scan_msg_.angle_min = -lidar_->getFov() / 2.0;
+    scan_msg_.angle_max =  lidar_->getFov() / 2.0;
     scan_msg_.ranges.resize(resolution);
 
   }
@@ -68,6 +70,7 @@ namespace diffdrive_webots_plugin
         scan_msg_.range_min = lidar_->getMinRange();
         scan_msg_.range_max = lidar_->getMaxRange();
         memcpy(scan_msg_.ranges.data(), scan, scan_msg_.ranges.size() * sizeof(float));
+        std::reverse(scan_msg_.ranges.begin(), scan_msg_.ranges.end());
         scan_pub_->publish(scan_msg_);
       }
     }

@@ -119,6 +119,11 @@ namespace diffdrive_webots_plugin
           {
             int idx = j * width + i;
             float x = image[idx];
+            
+            // temporary distance when out of range does not return INFINITY, this is a bug in R2022a
+            if (x >= range_finder_->getMaxRange() || x <= range_finder_->getMinRange())
+              x = INFINITY;
+
             float y = -(i - cx) * x / fx;
             float z = -(j - cy) * x / fy;
             memcpy(data + idx * 3    , &x, sizeof(float));
