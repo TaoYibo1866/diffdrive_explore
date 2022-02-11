@@ -3,7 +3,7 @@ import os
 from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
-from launch.actions import IncludeLaunchDescription
+from launch.actions import IncludeLaunchDescription, GroupAction
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 # from launch_ros.actions import Node
 
@@ -19,15 +19,23 @@ def generate_launch_description():
 
     odometry_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([os.path.join(diffdrive_navigation_share, 'launch'), '/odometry.launch.py']),
-        launch_arguments={'use_sim_time': 'True'}.items(),
+        launch_arguments={'use_sim_time': 'true'}.items(),
+    )
+
+    mapping_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([os.path.join(diffdrive_navigation_share, 'launch'), '/mapping.launch.py']),
+        launch_arguments={'use_sim_time': 'true'}.items(),
     )
 
     # ground_control_launch = IncludeLaunchDescription(
     #     PythonLaunchDescriptionSource([os.path.join(ground_control_share, 'launch'), '/ground_control.launch.py'])
     # )
 
+    GroupAction()
+
     return LaunchDescription([
-        webots_launch,
-        odometry_launch,
+        GroupAction(actions=webots_launch),
+        GroupAction(actions=odometry_launch),
+        GroupAction(actions=mapping_launch),
         # ground_control_launch
     ])

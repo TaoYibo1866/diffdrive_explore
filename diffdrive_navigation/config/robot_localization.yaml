@@ -1,5 +1,4 @@
-### ekf config file ###
-ekf_odometry:
+robot_localization:
     ros__parameters:
         frequency: 30.0
 

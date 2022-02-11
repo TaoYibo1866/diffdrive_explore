@@ -91,6 +91,8 @@ Visualization Manager:
           Value: true
         left_wheel_link:
           Value: false
+        map:
+          Value: true
         odom:
           Value: true
         right_wheel_link:
@@ -101,6 +103,8 @@ Visualization Manager:
       Show Axes: true
       Show Names: true
       Tree:
+        map:
+          {}
         odom:
           base_link:
             base_footprint:
@@ -197,6 +201,26 @@ Visualization Manager:
       Use Fixed Frame: true
       Use rainbow: true
       Value: true
+    - Alpha: 0.699999988079071
+      Class: rviz_default_plugins/Map
+      Color Scheme: map
+      Draw Behind: false
+      Enabled: true
+      Name: Map
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /map
+      Update Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /map_updates
+      Use Timestamp: false
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -218,7 +242,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 17.869766235351562
+      Distance: 13.045055389404297
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -233,10 +257,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.9353978633880615
+      Pitch: 1.0797969102859497
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 4.095401287078857
+      Yaw: 4.990408897399902
     Saved: ~
 Window Geometry:
   Displays:
@@ -248,5 +272,5 @@ Window Geometry:
     collapsed: false
   QMainWindow State: 000000ff00000000fd00000001000000000000023d0000058cfc0200000003fb000000100044006900730070006c006100790073010000006e000003a30000018200fffffffb0000000a0049006d006100670065010000041d000001dd0000004a00fffffffb0000000a0049006d006100670065000000041d000001dd0000000000000000000005610000058c00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Width: 1962
-  X: 475
-  Y: 477
+  X: 557
+  Y: 294

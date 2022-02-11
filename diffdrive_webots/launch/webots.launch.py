@@ -9,11 +9,25 @@ from webots_ros2_driver.webots_launcher import WebotsLauncher
 
 
 def generate_launch_description():
-    pkg_share = get_package_share_directory('diffdrive_webots')
+    diffdrive_webots_share = get_package_share_directory('diffdrive_webots')
     
+    world = LaunchConfiguration('world')
+    declare_world_argument = DeclareLaunchArgument(
+            'world',
+            default_value='diffdrive_navigation.wbt',
+            description='Choose one of the world files from `/diffdrive_webots/worlds` directory'
+    )
+
+    robot_description_file = LaunchConfiguration('robot_description_file')
+    declare_robot_description_file_argument = DeclareLaunchArgument(
+            'robot_description_file',
+            default_value=os.path.join(diffdrive_webots_share, 'resource', 'diffdrive_webots.urdf'),
+            description='Choose one of the urdf files from `/diffdrive_webots/resource` directory'
+    )
+
     webots = WebotsLauncher(
-        world=PathJoinSubstitution([pkg_share, 'worlds', LaunchConfiguration('world')]),
-        gui=True,
+        world=PathJoinSubstitution([diffdrive_webots_share, 'worlds', world]),
+        gui='true',
         mode='realtime'
     )
 
@@ -23,7 +37,7 @@ def generate_launch_description():
         name='webots_ros2_driver',
         output='screen',
         parameters=[
-            {'robot_description': Command(['xacro ', os.path.join(pkg_share, 'resource', 'diffdrive_webots.urdf')])},
+            {'robot_description': Command(['xacro ', robot_description_file])},
             {'use_sim_time': True}
         ]
     )
@@ -31,25 +45,28 @@ def generate_launch_description():
     static_transform_publisher_node1 = Node(
         package='tf2_ros',
         executable='static_transform_publisher',
-        name='static_transform_publisher',
+        name='static_transform_publisher1',
         output='screen',
-        arguments=['0', '0', '0.1', '0', '-0.1', '0', 'base_link', 'camera'],
+        parameters=[
+            {'use_sim_time': True}
+        ],
+        arguments=['0', '0', '0.1', '0', '-0.1', '0', 'base_link', 'camera']
     )
 
     static_transform_publisher_node2 = Node(
         package='tf2_ros',
         executable='static_transform_publisher',
-        name='static_transform_publisher',
+        name='static_transform_publisher2',
         output='screen',
+        parameters=[
+            {'use_sim_time': True}
+        ],
         arguments=['0', '0', '0.2', '0', '0', '0', 'base_link', 'laser'],
     )
 
     return LaunchDescription([
-        DeclareLaunchArgument(
-            'world',
-            default_value='diffdrive_navigation.wbt',
-            description='Choose one of the world files from `/diffdrive_webots/worlds` directory'
-        ),
+        declare_world_argument,
+        declare_robot_description_file_argument,
         webots,
         robot_driver_node,
         static_transform_publisher_node1,
