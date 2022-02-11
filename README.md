@@ -23,6 +23,6 @@ source install/local_setup.bash
 ```
 ## Run
 ```Bash
-ros2 launch diffdrive_webots localization.launch.py
+ros2 launch diffdrive_webots slam.launch.py
 ros2 launch ground_control ground_control.launch.py
 ```
