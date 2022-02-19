@@ -104,21 +104,20 @@ Visualization Manager:
       Show Names: true
       Tree:
         map:
-          {}
-        odom:
-          base_link:
-            base_footprint:
-              {}
-            camera:
-              {}
-            front_wheel_link:
-              {}
-            laser:
-              {}
-            left_wheel_link:
-              {}
-            right_wheel_link:
-              {}
+          odom:
+            base_link:
+              base_footprint:
+                {}
+              camera:
+                {}
+              front_wheel_link:
+                {}
+              laser:
+                {}
+              left_wheel_link:
+                {}
+              right_wheel_link:
+                {}
       Update Interval: 0
       Value: true
     - Class: rviz_default_plugins/Image
@@ -201,7 +200,7 @@ Visualization Manager:
       Use Fixed Frame: true
       Use rainbow: true
       Value: true
-    - Alpha: 0.699999988079071
+    - Alpha: 0.20000000298023224
       Class: rviz_default_plugins/Map
       Color Scheme: map
       Draw Behind: false
@@ -219,6 +218,46 @@ Visualization Manager:
         History Policy: Keep Last
         Reliability Policy: Reliable
         Value: /map_updates
+      Use Timestamp: false
+      Value: true
+    - Alpha: 0.20000000298023224
+      Class: rviz_default_plugins/Map
+      Color Scheme: map
+      Draw Behind: false
+      Enabled: true
+      Name: Map
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /global_costmap/costmap
+      Update Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /global_costmap/costmap_updates
+      Use Timestamp: false
+      Value: true
+    - Alpha: 0.699999988079071
+      Class: rviz_default_plugins/Map
+      Color Scheme: costmap
+      Draw Behind: false
+      Enabled: true
+      Name: Map
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /local_costmap/costmap
+      Update Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /local_costmap/costmap_updates
       Use Timestamp: false
       Value: true
   Enabled: true
@@ -242,7 +281,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 13.045055389404297
+      Distance: 16.62160873413086
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -272,5 +311,5 @@ Window Geometry:
     collapsed: false
   QMainWindow State: 000000ff00000000fd00000001000000000000023d0000058cfc0200000003fb000000100044006900730070006c006100790073010000006e000003a30000018200fffffffb0000000a0049006d006100670065010000041d000001dd0000004a00fffffffb0000000a0049006d006100670065000000041d000001dd0000000000000000000005610000058c00000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Width: 1962
-  X: 557
-  Y: 294
+  X: 498
+  Y: 150
