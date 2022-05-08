@@ -1,4 +1,4 @@
-# diffdrive_explore
+# diffdrive_simulator
 ## Prerequisites
 + ROS2 Foxy
 + Webots R2022a https://github.com/cyberbotics/webots
